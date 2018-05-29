@@ -1,0 +1,22 @@
+name: RK-Economy
+author: T4TU_
+version: 2
+depend: [RK-Core, LangUtils]
+main: me.t4tu.rkeconomy.Economy
+commands:
+    rahat:
+    raha:
+    money:
+    balance:
+    bal:
+    kultakolikko:
+    hopeakolikko:
+    shekki:
+    sekki:
+    kauppa:
+    kaupat:
+    torikojut:
+    torikojut:
+    liikekiinteistö:
+    liikekiinteistöt:
+    shop:
