@@ -1,8 +1,9 @@
 name: RK-Economy
 author: T4TU_
 version: 2
-depend: [RK-Core, LangUtils]
 main: me.t4tu.rkeconomy.Economy
+depend: [RK-Core, LangUtils]
+api-version: 1.13
 commands:
     rahat:
     raha:

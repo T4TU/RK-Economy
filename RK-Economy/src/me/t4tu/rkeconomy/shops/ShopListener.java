@@ -51,7 +51,7 @@ public class ShopListener implements Listener {
 						ItemStack original = shop.getInventory().getItem(slot);
 						String name = e.getCurrentItem().getItemMeta().getDisplayName().split("§6 ")[0];
 						double price = shop.getPrice(slot);
-						player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_TRADING, 1, 1);
+						player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_TRADE, 1, 1);
 						player.sendMessage("");
 						player.sendMessage(tc2 + "Kirjoita " + tc1 + "chattiin" + tc2 + ", kuinka monta kappaletta haluat\nostaa tuotetta " + name + tc2 + ":");
 						shop.close(player);

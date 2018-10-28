@@ -249,7 +249,7 @@ public class MarketCommand implements CommandExecutor {
 									}
 									gui.addItem(CoreUtils.getItem(Material.BOOK, "§a" + marketStall.getType().getFriendlyName(), lore, 1), 13, null);
 									if (marketStall.getType() == MarketStallType.LIIKEKIINTEISTÖ) {
-										gui.addItem(CoreUtils.getItem(Material.BOOK_AND_QUILL, "§aMyyntihistoria", Arrays.asList("", "§7 » Näytä myyntihistoria klikkaamalla!"), 1), 29, new InventoryGUIAction() {
+										gui.addItem(CoreUtils.getItem(Material.WRITABLE_BOOK, "§aMyyntihistoria", Arrays.asList("", "§7 » Näytä myyntihistoria klikkaamalla!"), 1), 29, new InventoryGUIAction() {
 											public void onClickAsync() { }
 											public void onClick() {
 												gui.close(player);
@@ -265,7 +265,7 @@ public class MarketCommand implements CommandExecutor {
 										});
 									}
 									else {
-										gui.addItem(CoreUtils.getItem(Material.BOOK_AND_QUILL, "§aMyyntihistoria", Arrays.asList("", "§7 » Näytä myyntihistoria klikkaamalla!"), 1), 31, new InventoryGUIAction() {
+										gui.addItem(CoreUtils.getItem(Material.WRITABLE_BOOK, "§aMyyntihistoria", Arrays.asList("", "§7 » Näytä myyntihistoria klikkaamalla!"), 1), 31, new InventoryGUIAction() {
 											public void onClickAsync() { }
 											public void onClick() {
 												gui.close(player);

@@ -332,8 +332,7 @@ public class MarketListener implements Listener {
 				e.setCancelled(true);
 				MarketStall marketStall = sellingPoint.getOwner();
 				if (marketStall.isRented()) {
-					// TODO if (marketStall.getOwnerUuid().equals(player.getUniqueId().toString()) || (CoreUtils.hasAdminPowers(player) && player.isSneaking())) {
-					if (marketStall.getOwnerUuid().equals(player.getUniqueId().toString()) && player.isSneaking()) {
+					if (marketStall.getOwnerUuid().equals(player.getUniqueId().toString()) || (CoreUtils.hasAdminPowers(player) && player.isSneaking())) {
 						player.openInventory(sellingPoint.getInventory());
 						player.playSound(player.getLocation(), Sound.BLOCK_CHEST_OPEN, 0.5f, 1);
 					}
@@ -616,9 +615,7 @@ public class MarketListener implements Listener {
 				marketStall.setOwnerUuid(player.getUniqueId().toString());
 				marketStall.setOwnerName(player.getName());
 				marketStall.setName(null);
-				// TODO
-//				marketStall.setExpires(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * days);
-				marketStall.setExpires(System.currentTimeMillis() + 1000 * 10);
+				marketStall.setExpires(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * days);
 				marketStall.setProfit(0);
 				marketStall.setHistory(new ArrayList<String>());
 				for (SellingPoint sellingPoint : marketStall.getSellingPoints()) {
@@ -646,14 +643,14 @@ public class MarketListener implements Listener {
 		InventoryGUI gui = new InventoryGUI(54, "Löytötavarat");
 		List<ItemStack> items = getLostAndFoundItems(player);
 		if (items.isEmpty()) {
-			gui.addItem(CoreUtils.getItem(Material.STAINED_GLASS_PANE, "§cEi löytötavaroita", Arrays.asList("", "§7Jos unohdat noutaa tavarasi torikojusta", "§7tai liikekiinteistöstä ennen kuin se", 
-					"§7vanhenee, ilmestyvät tavarat tänne."), 1, 14), 22, null);
+			gui.addItem(CoreUtils.getItem(Material.RED_STAINED_GLASS_PANE, "§cEi löytötavaroita", Arrays.asList("", "§7Jos unohdat noutaa tavarasi torikojusta", "§7tai liikekiinteistöstä ennen kuin se", 
+					"§7vanhenee, ilmestyvät tavarat tänne."), 1), 22, null);
 		}
 		else {
 			for (int i = 0; i < items.size(); i++) {
 				ItemStack item = items.get(i);
 				if (i == 53) {
-					gui.addItem(CoreUtils.getItem(Material.STAINED_GLASS_PANE, "§8Ja " + (items.size() - 53) + " muuta tavaraa...", null, 1, 15), 53, null);
+					gui.addItem(CoreUtils.getItem(Material.GRAY_STAINED_GLASS_PANE, "§8Ja " + (items.size() - 53) + " muuta tavaraa...", null, 1), 53, null);
 				}
 				else if (i < 53) {
 					gui.addItem(item.clone(), i, new InventoryGUIAction() {

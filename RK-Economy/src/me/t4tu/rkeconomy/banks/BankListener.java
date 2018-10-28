@@ -214,7 +214,7 @@ public class BankListener implements Listener {
 						gui.addItem(CoreUtils.getItem(Material.ARROW, "§c« Palaa takaisin", null, 1), 0, new InventoryGUIAction() {
 							public void onClickAsync() { }
 							public void onClick() {
-								player.playSound(player.getLocation(), Sound.ENTITY_ENDERMEN_TELEPORT, 1, 1);
+								player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 1);
 								openBankInventory(player);
 							}
 						});
@@ -322,7 +322,7 @@ public class BankListener implements Listener {
 					public void onClick() { }
 				});
 				
-				gui.addItem(CoreUtils.getItem(Material.BOOK_AND_QUILL, "§6Lainat", Arrays.asList("", "§7Tulossa..."), 1), 34, null);
+				gui.addItem(CoreUtils.getItem(Material.WRITABLE_BOOK, "§6Lainat", Arrays.asList("", "§7Tulossa..."), 1), 34, null);
 			}
 		}.runTaskAsynchronously(economy);
 		
