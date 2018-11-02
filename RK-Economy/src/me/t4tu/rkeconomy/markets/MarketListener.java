@@ -220,7 +220,7 @@ public class MarketListener implements Listener {
 			try {
 				int stallId = Integer.parseInt(price.get(player).split(":")[0]);
 				int pointId = Integer.parseInt(price.get(player).split(":")[1]);
-				double price = economy.round(Double.parseDouble(e.getMessage().replace(",", ".")), 1, RoundingMode.HALF_UP);
+				double price = Economy.round(Double.parseDouble(e.getMessage().replace(",", ".")), 1, RoundingMode.HALF_UP);
 				MarketStall marketStall = economy.getMarketManager().getMarketStall(stallId);
 				SellingPoint sellingPoint = marketStall.getSellingPoint(pointId);
 				if (price > 0) {
@@ -503,10 +503,10 @@ public class MarketListener implements Listener {
 					else if (!marketStall.isRented()) {
 						InventoryGUI gui = new InventoryGUI(45, "Vuokraa " + marketStall.getType().getFriendlyName().toLowerCase());
 						if (marketStall.getType() == MarketStallType.TORIKOJU) {
-							double price = economy.round(marketStall.getSellingPoints().size() * Economy.TORIKOJU_PRICE, 1, RoundingMode.HALF_UP);
+							double price = Economy.round(marketStall.getSellingPoints().size() * Economy.TORIKOJU_PRICE, 1, RoundingMode.HALF_UP);
 							gui.addItem(CoreUtils.getItem(Material.BOOK, "§a" + marketStall.getType().getFriendlyName(), Arrays.asList("", "§aMyyntipisteitä: §7" + 
 									marketStall.getSellingPoints().size() + " kpl", "§aHinta/päivä: §7" + price + "£"), 1), 13, null);
-							double price3 = economy.round(marketStall.getSellingPoints().size() * Economy.TORIKOJU_PRICE * 3, 1, RoundingMode.HALF_UP);
+							double price3 = Economy.round(marketStall.getSellingPoints().size() * Economy.TORIKOJU_PRICE * 3, 1, RoundingMode.HALF_UP);
 							gui.addItem(CoreUtils.getItem(Material.SIGN, "§a§lVuokraa 3 päiväksi", Arrays.asList("§7Hinta: §a" + price3 + "£"), 1), 
 									29, new InventoryGUIAction() {
 								public void onClickAsync() { }
@@ -515,7 +515,7 @@ public class MarketListener implements Listener {
 									rent(marketStall, 3, e.getPlayer());
 								}
 							});
-							double price7 = economy.round(marketStall.getSellingPoints().size() * Economy.TORIKOJU_PRICE * 7, 1, RoundingMode.HALF_UP);
+							double price7 = Economy.round(marketStall.getSellingPoints().size() * Economy.TORIKOJU_PRICE * 7, 1, RoundingMode.HALF_UP);
 							gui.addItem(CoreUtils.getItem(Material.SIGN, "§a§lVuokraa 7 päiväksi", Arrays.asList("§7Hinta: §a" + price7 + "£"), 1), 
 									31, new InventoryGUIAction() {
 								public void onClickAsync() { }
@@ -524,7 +524,7 @@ public class MarketListener implements Listener {
 									rent(marketStall, 7, e.getPlayer());
 								}
 							});
-							double price14 = economy.round(marketStall.getSellingPoints().size() * Economy.TORIKOJU_PRICE * 14, 1, RoundingMode.HALF_UP);
+							double price14 = Economy.round(marketStall.getSellingPoints().size() * Economy.TORIKOJU_PRICE * 14, 1, RoundingMode.HALF_UP);
 							gui.addItem(CoreUtils.getItem(Material.SIGN, "§a§lVuokraa 14 päiväksi", Arrays.asList("§7Hinta: §a" + price14 + "£"), 1), 
 									33, new InventoryGUIAction() {
 								public void onClickAsync() { }
@@ -535,10 +535,10 @@ public class MarketListener implements Listener {
 							});
 						}
 						else if (marketStall.getType() == MarketStallType.LIIKEKIINTEISTÖ) {
-							double price = economy.round(marketStall.getSellingPoints().size() * Economy.TORIKOJU_PRICE, 1, RoundingMode.HALF_UP);
+							double price = Economy.round(marketStall.getSellingPoints().size() * Economy.TORIKOJU_PRICE, 1, RoundingMode.HALF_UP);
 							gui.addItem(CoreUtils.getItem(Material.BOOK, "§a" + marketStall.getType().getFriendlyName(), Arrays.asList("", "§aMyyntipisteitä: §7" + 
 									marketStall.getSellingPoints().size() + " kpl", "§aHinta/päivä: §7" + price + "£"), 1), 13, null);
-							double price7 = economy.round(marketStall.getSellingPoints().size() * Economy.TORIKOJU_PRICE * 7, 1, RoundingMode.HALF_UP);
+							double price7 = Economy.round(marketStall.getSellingPoints().size() * Economy.TORIKOJU_PRICE * 7, 1, RoundingMode.HALF_UP);
 							gui.addItem(CoreUtils.getItem(Material.SIGN, "§a§lVuokraa 7 päiväksi", Arrays.asList("§7Hinta: §a" + price7 + "£"), 1), 
 									29, new InventoryGUIAction() {
 								public void onClickAsync() { }
@@ -547,7 +547,7 @@ public class MarketListener implements Listener {
 									rent(marketStall, 7, e.getPlayer());
 								}
 							});
-							double price14 = economy.round(marketStall.getSellingPoints().size() * Economy.TORIKOJU_PRICE * 14, 1, RoundingMode.HALF_UP);
+							double price14 = Economy.round(marketStall.getSellingPoints().size() * Economy.TORIKOJU_PRICE * 14, 1, RoundingMode.HALF_UP);
 							gui.addItem(CoreUtils.getItem(Material.SIGN, "§a§lVuokraa 14 päiväksi", Arrays.asList("§7Hinta: §a" + price14 + "£"), 1), 
 									31, new InventoryGUIAction() {
 								public void onClickAsync() { }
@@ -556,7 +556,7 @@ public class MarketListener implements Listener {
 									rent(marketStall, 14, e.getPlayer());
 								}
 							});
-							double price28 = economy.round(marketStall.getSellingPoints().size() * Economy.TORIKOJU_PRICE * 28, 1, RoundingMode.HALF_UP);
+							double price28 = Economy.round(marketStall.getSellingPoints().size() * Economy.TORIKOJU_PRICE * 28, 1, RoundingMode.HALF_UP);
 							gui.addItem(CoreUtils.getItem(Material.SIGN, "§a§lVuokraa 28 päiväksi", Arrays.asList("§7Hinta: §a" + price28 + "£"), 1), 
 									33, new InventoryGUIAction() {
 								public void onClickAsync() { }
@@ -601,9 +601,9 @@ public class MarketListener implements Listener {
 				return;
 			}
 			
-			double price = economy.round(Economy.TORIKOJU_PRICE * marketStall.getSellingPoints().size() * days, 1, RoundingMode.HALF_UP);
+			double price = Economy.round(Economy.TORIKOJU_PRICE * marketStall.getSellingPoints().size() * days, 1, RoundingMode.HALF_UP);
 			if (marketStall.getType() == MarketStallType.LIIKEKIINTEISTÖ) {
-				price = economy.round(Economy.LIIKEKIINTEISTÖ_PRICE * marketStall.getSellingPoints().size() * days, 1, RoundingMode.HALF_UP);
+				price = Economy.round(Economy.LIIKEKIINTEISTÖ_PRICE * marketStall.getSellingPoints().size() * days, 1, RoundingMode.HALF_UP);
 			}
 			
 			if (economy.takeCash(player, price)) {

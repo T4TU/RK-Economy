@@ -74,10 +74,10 @@ public class BankListener implements Listener {
 			e.setCancelled(true);
 			double a = 0;
 			try {
-				a = economy.round(Double.parseDouble(e.getMessage().replace(",", ".")), 1, RoundingMode.HALF_UP);
+				a = Economy.round(Double.parseDouble(e.getMessage().replace(",", ".")), 1, RoundingMode.HALF_UP);
 				if (a > 0) {
 					if (economy.takeCash(player, a)) {
-						economy.setMoney(player, economy.getMoney(player) + a);
+						Economy.setMoney(player, Economy.getMoney(player) + a);
 						player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
 						player.sendMessage(tc2 + "Talletit pankkitilillesi " + tc1 + a + "£" + tc2 + "!");
 						deposit.remove(player);
@@ -103,13 +103,13 @@ public class BankListener implements Listener {
 			e.setCancelled(true);
 			double a = 0;
 			try {
-				a = economy.round(Double.parseDouble(e.getMessage().replace(",", ".")), 1, RoundingMode.HALF_UP);
+				a = Economy.round(Double.parseDouble(e.getMessage().replace(",", ".")), 1, RoundingMode.HALF_UP);
 				if (a > 0) {
-					if (economy.getMoney(player) >= a) {
-						int goldAmount = economy.round(a, RoundingMode.DOWN);
-						int silverAmount = economy.round((a - goldAmount) * 10, RoundingMode.DOWN);
+					if (Economy.getMoney(player) >= a) {
+						int goldAmount = Economy.round(a, RoundingMode.DOWN);
+						int silverAmount = Economy.round((a - goldAmount) * 10, RoundingMode.DOWN);
 						if (CoreUtils.hasEnoughRoom(player, economy.GOLD_COIN, goldAmount, economy.SILVER_COIN, silverAmount)) {
-							economy.setMoney(player, economy.getMoney(player) - a);
+							Economy.setMoney(player, Economy.getMoney(player) - a);
 							player.getInventory().addItem(economy.getGoldCoin(goldAmount));
 							player.getInventory().addItem(economy.getSilverCoin(silverAmount));
 							player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
@@ -160,7 +160,7 @@ public class BankListener implements Listener {
 		new BukkitRunnable() {
 			public void run() {
 				
-				gui.addItem(CoreUtils.getItem(Material.BOOK, "§6Pankkitili", Arrays.asList("", "§6Omistaja: §7" + player.getName(), "§6Saldo: §7" + economy.getMoney(player) + "£"), 1), 13, null);
+				gui.addItem(CoreUtils.getItem(Material.BOOK, "§6Pankkitili", Arrays.asList("", "§6Omistaja: §7" + player.getName(), "§6Saldo: §7" + Economy.getMoney(player) + "£"), 1), 13, null);
 				
 				gui.addItem(CoreUtils.getItem(Material.CHEST, "§6Nosta & talleta rahaa", 
 						Arrays.asList("", "§7Klikkaa hiiren vasemmalla tallettaaksesi rahaa.", "§7Klikkaa hiiren oikealla nostaaksesi rahaa."), 1), 28, new InventoryGUIEventAction() {
@@ -272,17 +272,17 @@ public class BankListener implements Listener {
 							if (CoreUtils.getDisplayName(i).equals("§fShekki") && i.getItemMeta().hasLore()) {
 								if (i.getAmount() == 1) {
 									try {
-										double a = economy.round(Double.parseDouble(i.getItemMeta().getLore().get(0).split("§o")[1].split("£")[0]), 1, RoundingMode.HALF_UP);
+										double a = Economy.round(Double.parseDouble(i.getItemMeta().getLore().get(0).split("§o")[1].split("£")[0]), 1, RoundingMode.HALF_UP);
 										String receiver = i.getItemMeta().getLore().get(1).split("§o")[1];
 										String s = i.getItemMeta().getLore().get(2).split("§o")[1];
 										if (receiver.equals(player.getName())) {
-											if (economy.getMoney(s) >= a) {
-												economy.setMoney(s, economy.getMoney(s) - a);
+											if (Economy.getMoney(s) >= a) {
+												Economy.setMoney(s, Economy.getMoney(s) - a);
 												if (Bukkit.getPlayer(s) != null) {
 													Bukkit.getPlayer(s).playSound(Bukkit.getPlayer(s).getLocation(), Sound.ENTITY_VILLAGER_YES, 1, 1);
 													Bukkit.getPlayer(s).sendMessage(tc2 + player.getName() + " lunasti juuri shekkisi, jonka arvo oli " + tc1 + a + "£" + tc2 + "!");
 												}
-												economy.setMoney(player, economy.getMoney(player) + a);
+												Economy.setMoney(player, Economy.getMoney(player) + a);
 												player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
 												player.sendMessage(tc2 + "Lunastit shekin, jonka arvo oli " + tc1 + a + "£" + tc2 + "! Summa lisättiin pankkitilillesi.");
 												player.getInventory().setItemInMainHand(null);

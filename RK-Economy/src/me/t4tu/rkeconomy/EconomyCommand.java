@@ -40,22 +40,22 @@ public class EconomyCommand implements CommandExecutor {
 					public void run() {
 						try {
 							double amount = Double.parseDouble(args[2]);
-							if (economy.hasAccount(args[0])) {
+							if (Economy.hasAccount(args[0])) {
 								if (args[1].equalsIgnoreCase("set")) {
-									economy.setMoney(args[0], amount);
+									Economy.setMoney(args[0], amount);
 									sender.sendMessage(tc2 + "Asetettiin pelaajan " + tc1 + args[0] + tc2 + " rahamääräksi " + tc1 + amount + "£" + tc2 + "!");
 								}
 								else if (args[1].equalsIgnoreCase("give")) {
-									double money = economy.getMoney(args[0]);
-									economy.setMoney(args[0], money + amount);
+									double money = Economy.getMoney(args[0]);
+									Economy.setMoney(args[0], money + amount);
 									sender.sendMessage(tc2 + "Lisättiin pelaajan " + tc1 + args[0] + tc2 + " tilille " + tc1 + amount + "£" + tc2 + "!"
-											+ " (Yhteensä " + tc1 + economy.getMoney(args[0]) + "£" + tc2 + ")");
+											+ " (Yhteensä " + tc1 + Economy.getMoney(args[0]) + "£" + tc2 + ")");
 								}
 								else if (args[1].equalsIgnoreCase("take")) {
-									double money = economy.getMoney(args[0]);
-									economy.setMoney(args[0], money - amount);
+									double money = Economy.getMoney(args[0]);
+									Economy.setMoney(args[0], money - amount);
 									sender.sendMessage(tc2 + "Otettiin pelaajan " + tc1 + args[0] + tc2 + " tililtä " + tc1 + amount + "£" + tc2 + "!"
-											+ " (Yhteensä " + tc1 + economy.getMoney(args[0]) + "£" + tc2 + ")");
+											+ " (Yhteensä " + tc1 + Economy.getMoney(args[0]) + "£" + tc2 + ")");
 								}
 								else {
 									sender.sendMessage(usage + "/money <pelaaja> [<set/give/take> <määrä>]");
@@ -74,8 +74,8 @@ public class EconomyCommand implements CommandExecutor {
 			else if (args.length >= 1 && CoreUtils.hasRank(sender, "ylläpitäjä")) {
 				new BukkitRunnable() {
 					public void run() {
-						if (economy.hasAccount(args[0])) {
-							sender.sendMessage(tc2 + "Pelaajan " + tc1 + args[0] + tc2 + " tilillä on rahaa yhteensä " + tc1 + economy.getMoney(args[0]) + "£" + tc2 + "!");
+						if (Economy.hasAccount(args[0])) {
+							sender.sendMessage(tc2 + "Pelaajan " + tc1 + args[0] + tc2 + " tilillä on rahaa yhteensä " + tc1 + Economy.getMoney(args[0]) + "£" + tc2 + "!");
 						}
 						else {
 							sender.sendMessage(tc3 + "Ei löydetty pelaajaa antamallasi nimellä!");
@@ -90,7 +90,7 @@ public class EconomyCommand implements CommandExecutor {
 					player.sendMessage(tc2 + "§m----------" + tc1 + " Rahat " + tc2 + "§m----------");
 					player.sendMessage("");
 					player.sendMessage(tc2 + " Tavaraluettelossasi on " + tc1 + (economy.getGoldCoins(player) + (economy.getSilverCoins(player) / 10d)) + "£" + tc2 + " arvosta käteistä.");
-					player.sendMessage(tc2 + " Pankkitililläsi on rahaa yhteensä " + tc1 + economy.getMoney(player) + "£" + tc2 + ".");
+					player.sendMessage(tc2 + " Pankkitililläsi on rahaa yhteensä " + tc1 + Economy.getMoney(player) + "£" + tc2 + ".");
 					player.sendMessage("");
 				}
 				else {
@@ -167,7 +167,7 @@ public class EconomyCommand implements CommandExecutor {
 									String receiver = CoreUtils.nameToName(args[0]);
 									if (receiver != null) {
 										try {
-											double amount = economy.round(Double.parseDouble(args[1].replace(",", ".")), 1, RoundingMode.HALF_UP);
+											double amount = Economy.round(Double.parseDouble(args[1].replace(",", ".")), 1, RoundingMode.HALF_UP);
 											if (amount >= 1 && amount <= 10000) {
 												ItemMeta m = i.getItemMeta();
 												m.setDisplayName("§fShekki");

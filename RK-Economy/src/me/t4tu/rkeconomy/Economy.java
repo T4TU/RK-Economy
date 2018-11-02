@@ -342,12 +342,12 @@ public class Economy extends JavaPlugin {
 		return false;
 	}
 	
-	public boolean hasAccount(String name) {
+	public static boolean hasAccount(String name) {
 		MySQLResult statsData = MySQLUtils.get("SELECT money FROM player_stats WHERE name=?", name);
 		return statsData != null;
 	}
 	
-	public double getMoney(Player player) {
+	public static double getMoney(Player player) {
 		MySQLResult statsData = MySQLUtils.get("SELECT money FROM player_stats WHERE uuid=?", player.getUniqueId().toString());
 		if (statsData != null) {
 			return round(statsData.getDouble(0, "money"), 1, RoundingMode.HALF_UP);
@@ -355,7 +355,7 @@ public class Economy extends JavaPlugin {
 		return 0;
 	}
 	
-	public double getMoney(String name) {
+	public static double getMoney(String name) {
 		MySQLResult statsData = MySQLUtils.get("SELECT money FROM player_stats WHERE name=?", name);
 		if (statsData != null) {
 			return round(statsData.getDouble(0, "money"), 1, RoundingMode.HALF_UP);
@@ -363,21 +363,31 @@ public class Economy extends JavaPlugin {
 		return 0;
 	}
 	
-	public void setMoney(Player player, double money) {
+	public static void setMoney(Player player, double money) {
 		money = round(money, 1, RoundingMode.HALF_UP);
-		MySQLUtils.set("UPDATE player_stats SET money=? WHERE uuid=?", money + "", player.getUniqueId().toString());
+		MySQLUtils.set("UPDATE player_stats SET money=" + money + " WHERE uuid=?", player.getUniqueId().toString());
 	}
 	
-	public void setMoney(String name, double money) {
+	public static void setMoney(String name, double money) {
 		money = round(money, 1, RoundingMode.HALF_UP);
-		MySQLUtils.set("UPDATE player_stats SET money=? WHERE name=?", money + "", name);
+		MySQLUtils.set("UPDATE player_stats SET money=" + money + " WHERE name=?", name);
 	}
 	
-	public Double round(Double value, int scale, RoundingMode roundingMode) {
+	public static void addMoney(Player player, double money) {
+		money = round(money, 1, RoundingMode.HALF_UP);
+		MySQLUtils.set("UPDATE player_stats SET money=money+" + money + " WHERE uuid=?", player.getUniqueId().toString());
+	}
+	
+	public static void addMoney(String name, double money) {
+		money = round(money, 1, RoundingMode.HALF_UP);
+		MySQLUtils.set("UPDATE player_stats SET money=money+" + money + " WHERE name=?", name);
+	}
+	
+	public static Double round(Double value, int scale, RoundingMode roundingMode) {
 		return new BigDecimal(value.toString()).setScale(scale, roundingMode).doubleValue();
 	}
 	
-	public Integer round(Double value, RoundingMode roundingMode) {
+	public static Integer round(Double value, RoundingMode roundingMode) {
 		return new BigDecimal(value.toString()).setScale(0, roundingMode).intValue();
 	}
 }

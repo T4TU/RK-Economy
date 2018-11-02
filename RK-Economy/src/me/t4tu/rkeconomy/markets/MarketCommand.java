@@ -335,7 +335,7 @@ public class MarketCommand implements CommandExecutor {
 							MarketStall marketStall = economy.getMarketManager().getMarketStall(id);
 							if (marketStall != null) {
 								if (marketStall.isRented() && marketStall.getOwnerUuid().equals(player.getUniqueId().toString())) {
-									int pages = economy.round(marketStall.getHistory().size() / 6d, RoundingMode.UP);
+									int pages = Economy.round(marketStall.getHistory().size() / 6d, RoundingMode.UP);
 									if (pages == 0) {
 										pages = 1;
 									}
