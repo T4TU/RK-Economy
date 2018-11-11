@@ -269,7 +269,7 @@ public class BankListener implements Listener {
 					public void onClickAsync() {
 						ItemStack i = player.getInventory().getItemInMainHand();
 						if (CoreUtils.isNotAir(i) && i.getType() == Material.PAPER) {
-							if (CoreUtils.getDisplayName(i).equals("§fShekki") && i.getItemMeta().hasLore()) {
+							if (CoreUtils.getDisplayName(i).equals("Shekki") && i.getItemMeta().hasLore()) {
 								if (i.getAmount() == 1) {
 									try {
 										double a = Economy.round(Double.parseDouble(i.getItemMeta().getLore().get(0).split("§o")[1].split("£")[0]), 1, RoundingMode.HALF_UP);
