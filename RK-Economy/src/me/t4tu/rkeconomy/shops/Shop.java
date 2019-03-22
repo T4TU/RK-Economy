@@ -33,11 +33,12 @@ public class Shop {
 		sync();
 	}
 	
-	public Shop(int id, String name, int size, String trigger, ItemStack[] items) {
+	public Shop(int id, String name, int size, String trigger, ItemStack[] items, Economy economy) {
 		this.id = id;
 		this.name = name;
 		this.size = size;
 		this.trigger = trigger;
+		this.economy = economy;
 		inventory = Bukkit.createInventory(null, size, name);
 		inventory.setContents(items);
 		shopInventory = Bukkit.createInventory(null, size, name);
@@ -45,14 +46,14 @@ public class Shop {
 	}
 	
 	public void sync() {
-		if (inventory.getContents() != null && inventory.getContents().length > 0) {
+		if (inventory.getContents() != null) {
 			shopInventory.clear();
 			int x = 0;
 			for (ItemStack stack : inventory.getContents()) {
 				if (stack != null && stack.getType() != null && stack.getType() != Material.AIR) {
 					ItemStack shopStack = stack.clone();
 					ItemMeta shopMeta = shopStack.getItemMeta();
-					shopMeta.setDisplayName("§a" + LanguageHelper.getItemDisplayName(shopStack, "fi_FI") + "§6 " + getPrice(x) + "£");
+					shopMeta.setDisplayName("§a" + LanguageHelper.getItemDisplayName(shopStack, "fi_FI") + "§6 " + economy.applyMultiplier(getPrice(x)) + "£");
 					shopStack.setItemMeta(shopMeta);
 					shopInventory.setItem(x, shopStack);
 				}

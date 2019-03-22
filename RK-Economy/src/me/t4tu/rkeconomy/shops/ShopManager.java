@@ -112,7 +112,7 @@ public class ShopManager {
 					for (int x = 0; x < rows * 9; x++) {
 						items[x] = (ItemStack) getConfig().getList("shops." + s + ".items").get(x);
 					}
-					shops.add(new Shop(id, name, rows * 9, trigger, items));
+					shops.add(new Shop(id, name, rows * 9, trigger, items, economy));
 				}
 				catch (Exception e) {
 					Bukkit.getConsoleSender().sendMessage("Virhe ladattaessa NPC-kauppaa ID:llä '" + s + "'");

@@ -50,10 +50,15 @@ public class ShopListener implements Listener {
 					if (e.getCurrentItem().getItemMeta().getDisplayName().contains("§6 ")) {
 						ItemStack original = shop.getInventory().getItem(slot);
 						String name = e.getCurrentItem().getItemMeta().getDisplayName().split("§6 ")[0];
-						double price = shop.getPrice(slot);
+						double price = economy.applyMultiplier(shop.getPrice(slot));
 						player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_TRADE, 1, 1);
 						player.sendMessage("");
-						player.sendMessage(tc2 + "Kirjoita " + tc1 + "chattiin" + tc2 + ", kuinka monta kappaletta haluat\nostaa tuotetta " + name + tc2 + ":");
+						if (original.getAmount() == 1) {
+							player.sendMessage(tc2 + "Kirjoita " + tc1 + "chattiin" + tc2 + ", kuinka monta kappaletta haluat\nostaa tuotetta " + name + tc2 + ":");
+						}
+						else {
+							player.sendMessage(tc2 + "Kirjoita " + tc1 + "chattiin" + tc2 + ", kuinka monta " + tc1 + original.getAmount() + tc2 + " kappaleen erää haluat\nostaa tuotetta " + name + tc2 + ":");
+						}
 						shop.close(player);
 						int random = new Random().nextInt(10000);
 						economy.getShopManager().getBuyers().put(player.getName() + ":" + name.replace(":", "=^=") + ":" + price + ":" + random, original);
@@ -146,13 +151,13 @@ public class ShopListener implements Listener {
 					return;
 				}
 				
-				item.setAmount(amount);
+				item.setAmount(item.getAmount() * amount);
 				
 				if (CoreUtils.hasEnoughRoom(player, item, amount, economy.SILVER_COIN, 9)) {
 					if (economy.takeCash(player, price * amount)) {
 						player.getInventory().addItem(item);
 						player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_YES, 1, 1);
-						player.sendMessage(tc2 + "Ostit " + tc1 + amount + tc2 + " kappaletta tuotetta " + tc1 + name + tc2 + " hintaan " + tc1 + price + "£" + tc2 + "!");
+						player.sendMessage(tc2 + "Ostit " + tc1 + item.getAmount() + tc2 + " kappaletta tuotetta " + tc1 + name + tc2 + " hintaan " + tc1 + price + "£" + tc2 + "!");
 					}
 					else {
 						player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);

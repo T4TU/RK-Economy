@@ -14,6 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.t4tu.rkcore.utils.CoreUtils;
+import me.t4tu.rkeconomy.shops.Shop;
 
 public class EconomyCommand implements CommandExecutor {
 	
@@ -205,6 +206,54 @@ public class EconomyCommand implements CommandExecutor {
 			}
 			else {
 				player.sendMessage(usage + "/shekki <saaja> <määrä>");
+			}
+			return true;
+		}
+		
+		if (cmd.getName().equalsIgnoreCase("hintamuutos")) {
+			if (CoreUtils.hasRank(player, "ylläpitäjä")) {
+				if (args.length >= 2) {
+					try {
+						int category = Integer.parseInt(args[0]);
+						double multiplier = Double.parseDouble(args[1]);
+						if (category >= 1 && category <= 6) {
+							economy.getConfig().set("multipliers." + category, multiplier);
+							economy.saveConfig();
+							for (Shop shop : economy.getShopManager().getShops()) {
+								shop.save();
+							}
+							player.sendMessage(tc2 + "Asetettiin hintakategorian " + tc1 + category + tc2 + " kertoimeksi " + tc1 + multiplier + tc2 + "!");
+						}
+						else {
+							player.sendMessage(tc3 + "Virheellinen kategoria tai kerroin!");
+						}
+					}
+					catch (NumberFormatException e) {
+						player.sendMessage(tc3 + "Virheellinen kategoria tai kerroin!");
+					}
+				}
+				else {
+					double multiplier1 = economy.getConfig().getDouble("multipliers.1");
+					double multiplier2 = economy.getConfig().getDouble("multipliers.2");
+					double multiplier3 = economy.getConfig().getDouble("multipliers.3");
+					double multiplier4 = economy.getConfig().getDouble("multipliers.4");
+					double multiplier5 = economy.getConfig().getDouble("multipliers.5");
+					double multiplier6 = economy.getConfig().getDouble("multipliers.6");
+					player.sendMessage("");
+					player.sendMessage(tc2 + "§m----------" + tc1 + " Hintakertoimet " + tc2 + "§m----------");
+					player.sendMessage("");
+					player.sendMessage(tc1 + " Kategoria #1: " + tc2 + "<5kk kerroin " + multiplier1);
+					player.sendMessage(tc1 + " Kategoria #2: " + tc2 + "5-20kk kerroin " + multiplier2);
+					player.sendMessage(tc1 + " Kategoria #3: " + tc2 + "20-60kk kerroin " + multiplier3);
+					player.sendMessage(tc1 + " Kategoria #4: " + tc2 + "60-115kk kerroin " + multiplier4);
+					player.sendMessage(tc1 + " Kategoria #5: " + tc2 + "115-505kk kerroin " + multiplier5);
+					player.sendMessage(tc1 + " Kategoria #6: " + tc2 + ">505kk kerroin " + multiplier6);
+					player.sendMessage("");
+					player.sendMessage(tc2 + " Muuta kertoimia: " + tc1 + "/hintamuutos <kategoria> <kerroin>");
+				}
+			}
+			else {
+				player.sendMessage(noPermission);
 			}
 		}
 		return true;

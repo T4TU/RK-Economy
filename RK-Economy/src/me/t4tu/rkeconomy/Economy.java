@@ -60,7 +60,7 @@ public class Economy extends JavaPlugin {
 	
 	public void onEnable() {
 		
-		saveConfig();
+		loadConfiguration();
 		
 		economyCommand = new EconomyCommand(this);
 		bankListener = new BankListener(this);
@@ -87,6 +87,7 @@ public class Economy extends JavaPlugin {
 		registerCommand("hopeakolikko", economyCommand, false);
 		registerCommand("shekki", economyCommand, true);
 		registerCommand("sekki", economyCommand, true);
+		registerCommand("hintamuutos", economyCommand, false);
 		registerCommand("kauppa", marketCommand, true);
 		registerCommand("kaupat", marketCommand, true);
 		registerCommand("torikoju", marketCommand, true);
@@ -342,6 +343,27 @@ public class Economy extends JavaPlugin {
 		return false;
 	}
 	
+	public double applyMultiplier(double price) {
+		if (price < 5) {
+			return round(price * getConfig().getDouble("multipliers.1"), 1, RoundingMode.HALF_UP);
+		}
+		if (price < 20) {
+			return round(price * getConfig().getDouble("multipliers.2"), 1, RoundingMode.HALF_UP);
+		}
+		if (price < 60) {
+			return round(price * getConfig().getDouble("multipliers.3"), 1, RoundingMode.HALF_UP);
+		}
+		if (price < 115) {
+			return round(price * getConfig().getDouble("multipliers.4"), 1, RoundingMode.HALF_UP);
+		}
+		if (price < 550) {
+			return round(price * getConfig().getDouble("multipliers.5"), 1, RoundingMode.HALF_UP);
+		}
+		else {
+			return round(price * getConfig().getDouble("multipliers.6"), 1, RoundingMode.HALF_UP);
+		}
+	}
+	
 	public static boolean hasAccount(String name) {
 		MySQLResult statsData = MySQLUtils.get("SELECT money FROM player_stats WHERE name=?", name);
 		return statsData != null;
@@ -389,5 +411,21 @@ public class Economy extends JavaPlugin {
 	
 	public static Integer round(Double value, RoundingMode roundingMode) {
 		return new BigDecimal(value.toString()).setScale(0, roundingMode).intValue();
+	}
+	
+	private void loadConfiguration() {
+		setConfigurationDefaultDouble("multipliers.1", 1);
+		setConfigurationDefaultDouble("multipliers.2", 1);
+		setConfigurationDefaultDouble("multipliers.3", 1);
+		setConfigurationDefaultDouble("multipliers.4", 1);
+		setConfigurationDefaultDouble("multipliers.5", 1);
+		setConfigurationDefaultDouble("multipliers.6", 1);
+		saveConfig();
+	}
+	
+	private void setConfigurationDefaultDouble(String path, double value) {
+		if (getConfig().getString(path) == null) {
+			getConfig().set(path, value);
+		}
 	}
 }
