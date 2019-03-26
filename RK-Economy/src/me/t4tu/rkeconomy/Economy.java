@@ -36,6 +36,8 @@ public class Economy extends JavaPlugin {
 	public static final double TORIKOJU_PRICE = 0.1;
 	public static final double LIIKEKIINTEISTÖ_PRICE = 0.1;
 	
+	public static Economy economy;
+	
 	public final ItemStack GOLD_COIN = getGoldCoin();
 	public final ItemStack SILVER_COIN = getSilverCoin();
 	
@@ -62,6 +64,7 @@ public class Economy extends JavaPlugin {
 		
 		loadConfiguration();
 		
+		economy = this;
 		economyCommand = new EconomyCommand(this);
 		bankListener = new BankListener(this);
 		marketManager = new MarketManager(this);
@@ -88,6 +91,7 @@ public class Economy extends JavaPlugin {
 		registerCommand("shekki", economyCommand, true);
 		registerCommand("sekki", economyCommand, true);
 		registerCommand("hintamuutos", economyCommand, false);
+		registerCommand("valtiontili", economyCommand, false);
 		registerCommand("kauppa", marketCommand, true);
 		registerCommand("kaupat", marketCommand, true);
 		registerCommand("torikoju", marketCommand, true);
@@ -405,6 +409,15 @@ public class Economy extends JavaPlugin {
 		MySQLUtils.set("UPDATE player_stats SET money=money+" + money + " WHERE name=?", name);
 	}
 	
+	public static double getStateMoney() {
+		return economy.getConfig().getDouble("state-money");
+	}
+	
+	public static void setStateMoney(double money) {
+		economy.getConfig().set("state-money", money);
+		economy.saveConfig();
+	}
+	
 	public static Double round(Double value, int scale, RoundingMode roundingMode) {
 		return new BigDecimal(value.toString()).setScale(scale, roundingMode).doubleValue();
 	}
@@ -414,6 +427,7 @@ public class Economy extends JavaPlugin {
 	}
 	
 	private void loadConfiguration() {
+		setConfigurationDefaultDouble("state-money", 0);
 		setConfigurationDefaultDouble("multipliers.1", 1);
 		setConfigurationDefaultDouble("multipliers.2", 1);
 		setConfigurationDefaultDouble("multipliers.3", 1);

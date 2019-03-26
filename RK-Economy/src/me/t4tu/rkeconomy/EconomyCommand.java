@@ -255,6 +255,16 @@ public class EconomyCommand implements CommandExecutor {
 			else {
 				player.sendMessage(noPermission);
 			}
+			return true;
+		}
+		
+		if (cmd.getName().equalsIgnoreCase("valtiontili")) {
+			if (CoreUtils.hasRank(player, "ylläpitäjä")) {
+				player.sendMessage(tc2 + "Valtion tilillä on rahaa: " + tc1 + Economy.getStateMoney() + "£");
+			}
+			else {
+				player.sendMessage(noPermission);
+			}
 		}
 		return true;
 	}
