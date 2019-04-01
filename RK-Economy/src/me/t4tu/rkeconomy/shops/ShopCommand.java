@@ -171,11 +171,11 @@ public class ShopCommand implements CommandExecutor {
 						p.sendMessage(tc2 + "Ladattiin kaupat uudestaan!");
 					}
 					else {
-						p.sendMessage(usage + "/shop <list/add/remove/edit/save/price/reload>");
+						p.sendMessage(usage + "/shop list/add/remove/edit/save/price/reload");
 					}
 				}
 				else {
-					p.sendMessage(usage + "/shop <list/add/remove/edit/save/price/reload>");
+					p.sendMessage(usage + "/shop list/add/remove/edit/save/price/reload");
 				}
 			}
 			else {

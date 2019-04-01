@@ -450,7 +450,7 @@ public class MarketCommand implements CommandExecutor {
 				}
 				else {
 					if (CoreUtils.hasRank(player, "ylläpitäjä")) {
-						player.sendMessage(usage + "/kauppa <info/aseta/poista/työkalu/päivitä/reload/tiedot/esikatsele/myyntihistoria/nimeä>");
+						player.sendMessage(usage + "/kauppa info/aseta/poista/työkalu/päivitä/reload/tiedot/esikatsele/myyntihistoria/nimeä");
 					}
 					else {
 						player.performCommand("kauppa");

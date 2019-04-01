@@ -59,7 +59,7 @@ public class EconomyCommand implements CommandExecutor {
 											+ " (Yhteensä " + tc1 + Economy.getMoney(args[0]) + "£" + tc2 + ")");
 								}
 								else {
-									sender.sendMessage(usage + "/money <pelaaja> [<set/give/take> <määrä>]");
+									sender.sendMessage(usage + "/money <pelaaja> [set/give/take <määrä>]");
 								}
 							}
 							else {
@@ -242,12 +242,12 @@ public class EconomyCommand implements CommandExecutor {
 					player.sendMessage("");
 					player.sendMessage(tc2 + "§m----------" + tc1 + " Hintakertoimet " + tc2 + "§m----------");
 					player.sendMessage("");
-					player.sendMessage(tc1 + " Kategoria #1: " + tc2 + "<5kk kerroin " + multiplier1);
-					player.sendMessage(tc1 + " Kategoria #2: " + tc2 + "5-20kk kerroin " + multiplier2);
-					player.sendMessage(tc1 + " Kategoria #3: " + tc2 + "20-60kk kerroin " + multiplier3);
-					player.sendMessage(tc1 + " Kategoria #4: " + tc2 + "60-115kk kerroin " + multiplier4);
-					player.sendMessage(tc1 + " Kategoria #5: " + tc2 + "115-505kk kerroin " + multiplier5);
-					player.sendMessage(tc1 + " Kategoria #6: " + tc2 + ">505kk kerroin " + multiplier6);
+					player.sendMessage(tc1 + " Kategoria #1: " + tc2 + "<5£ kerroin " + multiplier1);
+					player.sendMessage(tc1 + " Kategoria #2: " + tc2 + "5-20£ kerroin " + multiplier2);
+					player.sendMessage(tc1 + " Kategoria #3: " + tc2 + "20-60£ kerroin " + multiplier3);
+					player.sendMessage(tc1 + " Kategoria #4: " + tc2 + "60-115£ kerroin " + multiplier4);
+					player.sendMessage(tc1 + " Kategoria #5: " + tc2 + "115-505£ kerroin " + multiplier5);
+					player.sendMessage(tc1 + " Kategoria #6: " + tc2 + ">505£ kerroin " + multiplier6);
 					player.sendMessage("");
 					player.sendMessage(tc2 + " Muuta kertoimia: " + tc1 + "/hintamuutos <kategoria> <kerroin>");
 				}
