@@ -196,7 +196,7 @@ public class Economy extends JavaPlugin {
 	}
 	
 	public ItemStack getGoldCoin(int amount) {
-		ItemStack coin = new ItemStack(Material.SUNFLOWER, amount);
+		ItemStack coin = new ItemStack(Material.GOLD_NUGGET, amount);
 		ItemMeta meta = coin.getItemMeta();
 		meta.setDisplayName("§6Kultakolikko");
 		meta.setLore(Arrays.asList("§8Arvo: 1£"));
@@ -209,7 +209,7 @@ public class Economy extends JavaPlugin {
 	}
 	
 	public ItemStack getSilverCoin(int amount) {
-		ItemStack coin = new ItemStack(Material.GRAY_DYE, amount);
+		ItemStack coin = new ItemStack(Material.IRON_NUGGET, amount);
 		ItemMeta meta = coin.getItemMeta();
 		meta.setDisplayName("§7Hopeakolikko");
 		meta.setLore(Arrays.asList("§8Arvo: 0.1£"));

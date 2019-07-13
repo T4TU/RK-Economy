@@ -144,7 +144,7 @@ public class BankListener implements Listener {
 	
 	@EventHandler
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent e) {
-		if (e.getHand() == EquipmentSlot.HAND && CoreUtils.isNPCAndNamed(e.getRightClicked(), "§2Pankkiiri")) {
+		if (e.getHand() == EquipmentSlot.HAND && CoreUtils.isNPCAndNamed(e.getRightClicked(), "§2Pankkivirkailija")) {
 			openBankInventory(e.getPlayer());
 		}
 	}
@@ -214,7 +214,7 @@ public class BankListener implements Listener {
 						gui.addItem(CoreUtils.getItem(Material.ARROW, "§c« Palaa takaisin", null, 1), 0, new InventoryGUIAction() {
 							public void onClickAsync() { }
 							public void onClick() {
-								player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 1);
+								player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
 								openBankInventory(player);
 							}
 						});

@@ -256,7 +256,7 @@ public class MarketCommand implements CommandExecutor {
 												player.performCommand("kauppa myyntihistoria " + id);
 											}
 										});
-										gui.addItem(CoreUtils.getItem(Material.SIGN, "§aNimeä", Arrays.asList("", "§7 » Nimeä liikekiinteistösi klikkaamalla!"), 1), 33, new InventoryGUIAction() {
+										gui.addItem(CoreUtils.getItem(Material.OAK_SIGN, "§aNimeä", Arrays.asList("", "§7 » Nimeä liikekiinteistösi klikkaamalla!"), 1), 33, new InventoryGUIAction() {
 											public void onClickAsync() { }
 											public void onClick() {
 												gui.close(player);

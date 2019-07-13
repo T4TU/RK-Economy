@@ -23,6 +23,7 @@ public class ShopCommand implements CommandExecutor {
 		String tc1 = CoreUtils.getHighlightColor();
 		String tc2 = CoreUtils.getBaseColor();
 		String tc3 = CoreUtils.getErrorBaseColor();
+		String tc4 = CoreUtils.getErrorHighlightColor();
 		
 		String usage = CoreUtils.getUsageString();
 		String noPermission = CoreUtils.getNoPermissionString();
@@ -60,13 +61,25 @@ public class ShopCommand implements CommandExecutor {
 								int id = Integer.parseInt(args[1]);
 								int rows = Integer.parseInt(args[3]);
 								String name = args[2].replace("_", " ");
-								String trigger = args[4];
-								if (economy.getShopManager().getShopById(id) == null) {
-									economy.getShopManager().newShop(id, name, rows, trigger);
-									p.sendMessage(tc2 + "Lisättiin kauppa ID:llä #" + id + "!");
+								try {
+									int parentId = Integer.parseInt(args[4]);
+									if (economy.getShopManager().getShopById(id) == null) {
+										economy.getShopManager().newSubShop(id, name, rows, parentId);
+										p.sendMessage(tc2 + "Lisättiin kauppa ID:llä #" + id + "!");
+									}
+									else {
+										p.sendMessage(tc3 + "Tällä ID:llä on jo kauppa!");
+									}
 								}
-								else {
-									p.sendMessage(tc3 + "Tällä ID:llä on jo kauppa!");
+								catch (NumberFormatException e) {
+									String trigger = args[4].replace("_", " ");
+									if (economy.getShopManager().getShopById(id) == null) {
+										economy.getShopManager().newShop(id, name, rows, trigger);
+										p.sendMessage(tc2 + "Lisättiin kauppa ID:llä #" + id + "!");
+									}
+									else {
+										p.sendMessage(tc3 + "Tällä ID:llä on jo kauppa!");
+									}
 								}
 							}
 							catch (NumberFormatException e) {
@@ -74,7 +87,7 @@ public class ShopCommand implements CommandExecutor {
 							}
 						}
 						else {
-							p.sendMessage(usage + "/shop add <id> <nimi> <rivien määrä> <NPC:n nimi>");
+							p.sendMessage(usage + "/shop add <id> <nimi> <rivien määrä> <NPC:n nimi>" + tc3 + " tai " + tc4 + "/shop add <id> <nimi> <rivien määrä> <parent-id>");
 						}
 					}
 					else if (args[0].equalsIgnoreCase("remove")) {

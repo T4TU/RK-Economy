@@ -47,6 +47,28 @@ public class ShopListener implements Listener {
 					}
 				}
 				try {
+					if (shop instanceof SubShop) {
+						SubShop subShop = (SubShop) shop;
+						if (e.getCurrentItem().getItemMeta().getDisplayName().equals("§c« Palaa takaisin")) {
+							int parentId = subShop.getParentId();
+							Shop parentShop = economy.getShopManager().getShopById(parentId);
+							if (parentShop != null) {
+								parentShop.open(player);
+							}
+							player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1, 1);
+							return;
+						}
+					}
+					if (e.getCurrentItem().getItemMeta().getDisplayName().startsWith("§9Kategoria: ")) {
+						ItemStack original = shop.getInventory().getItem(slot);
+						int id = Integer.parseInt(original.getItemMeta().getLore().get(0));
+						Shop subShop = economy.getShopManager().getShopById(id);
+						if (subShop != null) {
+							subShop.open(player);
+						}
+						player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
+						return;
+					}
 					if (e.getCurrentItem().getItemMeta().getDisplayName().contains("§6 ")) {
 						ItemStack original = shop.getInventory().getItem(slot);
 						String name = e.getCurrentItem().getItemMeta().getDisplayName().split("§6 ")[0];
@@ -73,19 +95,16 @@ public class ShopListener implements Listener {
 						}.runTaskLater(economy, 140);
 					}
 				}
-				catch (Exception ex) {
-				}
+				catch (Exception ex) { }
 			}
 		}
 	}
 	
 	@EventHandler
 	public void onShopOpen(PlayerInteractEntityEvent e) {
-		if (e.getRightClicked() instanceof Player) {
-			for (Shop shop : economy.getShopManager().getShops()) {
-				if (CoreUtils.isNPCAndNamed(e.getRightClicked(), shop.getTrigger())) {
-					shop.open(e.getPlayer());
-				}
+		for (Shop shop : economy.getShopManager().getShops()) {
+			if (shop.getTrigger() != null && CoreUtils.isNPCAndNamed(e.getRightClicked(), shop.getTrigger())) {
+				shop.open(e.getPlayer());
 			}
 		}
 	}
@@ -98,7 +117,7 @@ public class ShopListener implements Listener {
 		Inventory inventory = e.getInventory();
 		if (economy.getShopManager().getShopByEditInventory(inventory) != null && e.getPlayer() instanceof Player) {
 			Player player = (Player) e.getPlayer();
-			player.sendMessage(tc2 + "Muokkasit kauppaa! Muista tallentaa muutokset komennolla /shop save!");
+			player.sendMessage(tc2 + "Muokkasit kauppaa! Muista tallentaa muutokset komennolla /shop save tai muuttamalla jonkin tuotteen hintaa!");
 		}
 	}
 	

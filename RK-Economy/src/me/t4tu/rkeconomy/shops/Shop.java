@@ -14,13 +14,13 @@ import me.t4tu.rkeconomy.Economy;
 
 public class Shop {
 	
-	private int id;
-	private int size;
-	private String name;
-	private String trigger;
-	private Inventory inventory;
-	private Inventory shopInventory;
-	private Economy economy;
+	protected int id;
+	protected int size;
+	protected String name;
+	protected String trigger;
+	protected Inventory inventory;
+	protected Inventory shopInventory;
+	protected Economy economy;
 	
 	public Shop(int id, String name, int size, String trigger, Economy economy) {
 		this.id = id;
@@ -53,7 +53,12 @@ public class Shop {
 				if (stack != null && stack.getType() != null && stack.getType() != Material.AIR) {
 					ItemStack shopStack = stack.clone();
 					ItemMeta shopMeta = shopStack.getItemMeta();
-					shopMeta.setDisplayName("§a" + LanguageHelper.getItemDisplayName(shopStack, "fi_FI") + "§6 " + economy.applyMultiplier(getPrice(x)) + "£");
+					if (shopMeta.hasDisplayName() && shopMeta.getDisplayName().startsWith("§9Kategoria: ")) {
+						shopMeta.setLore(null);
+					}
+					else {
+						shopMeta.setDisplayName("§a" + LanguageHelper.getItemDisplayName(shopStack, "fi_FI") + "§6 " + economy.applyMultiplier(getPrice(x)) + "£");
+					}
 					shopStack.setItemMeta(shopMeta);
 					shopInventory.setItem(x, shopStack);
 				}

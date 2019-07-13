@@ -93,6 +93,17 @@ public class ShopManager {
 		return shop;
 	}
 	
+	public Shop newSubShop(int id, String name, int rows, int parentId) {
+		SubShop shop = new SubShop(id, name, rows * 9, parentId, economy);
+		shops.add(shop);
+		getConfig().set("shops." + id + ".name", name);
+		getConfig().set("shops." + id + ".rows", rows);
+		getConfig().set("shops." + id + ".parent-id", parentId);
+		getConfig().set("shops." + id + ".items", shop.getInventory().getContents());
+		saveConfig();
+		return shop;
+	}
+	
 	public void removeShop(Shop shop) {
 		shops.remove(shop);
 		getConfig().set("shops." + shop.getId(), null);
@@ -107,12 +118,22 @@ public class ShopManager {
 					int id = Integer.parseInt(s);
 					int rows = getConfig().getInt("shops." + s + ".rows");
 					String name = getConfig().getString("shops." + s + ".name");
-					String trigger = ChatColor.translateAlternateColorCodes('&', getConfig().getString("shops." + s + ".trigger"));
-					ItemStack[] items = new ItemStack[rows * 9];
-					for (int x = 0; x < rows * 9; x++) {
-						items[x] = (ItemStack) getConfig().getList("shops." + s + ".items").get(x);
+					if (getConfig().contains("shops." + s + ".parent-id")) {
+						int parentId = getConfig().getInt("shops." + s + ".parent-id");
+						ItemStack[] items = new ItemStack[rows * 9];
+						for (int x = 0; x < rows * 9; x++) {
+							items[x] = (ItemStack) getConfig().getList("shops." + s + ".items").get(x);
+						}
+						shops.add(new SubShop(id, name, rows * 9, parentId, items, economy));
 					}
-					shops.add(new Shop(id, name, rows * 9, trigger, items, economy));
+					else {
+						String trigger = ChatColor.translateAlternateColorCodes('&', getConfig().getString("shops." + s + ".trigger"));
+						ItemStack[] items = new ItemStack[rows * 9];
+						for (int x = 0; x < rows * 9; x++) {
+							items[x] = (ItemStack) getConfig().getList("shops." + s + ".items").get(x);
+						}
+						shops.add(new Shop(id, name, rows * 9, trigger, items, economy));
+					}
 				}
 				catch (Exception e) {
 					Bukkit.getConsoleSender().sendMessage("Virhe ladattaessa NPC-kauppaa ID:llä '" + s + "'");
