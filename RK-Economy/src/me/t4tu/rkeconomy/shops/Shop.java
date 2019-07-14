@@ -57,7 +57,7 @@ public class Shop {
 						shopMeta.setLore(null);
 					}
 					else {
-						shopMeta.setDisplayName("§a" + LanguageHelper.getItemDisplayName(shopStack, "fi_FI") + "§6 " + economy.applyMultiplier(getPrice(x)) + "£");
+						shopMeta.setDisplayName("§a" + LanguageHelper.getItemDisplayName(shopStack, "fi_FI") + "§6 " + Economy.moneyAsString(economy.applyMultiplier(getPrice(x))) + "£");
 					}
 					shopStack.setItemMeta(shopMeta);
 					shopInventory.setItem(x, shopStack);
@@ -89,12 +89,12 @@ public class Shop {
 		sync();
 	}
 	
-	public double getPrice(int slot) {
+	public int getPrice(int slot) {
 		if (economy.getConfig().get("shops." + id + ".prices." + slot) != null) {
-			return economy.getConfig().getDouble("shops." + id + ".prices." + slot);
+			return economy.getConfig().getInt("shops." + id + ".prices." + slot);
 		}
 		else {
-			return 1.0;
+			return 10;
 		}
 	}
 	

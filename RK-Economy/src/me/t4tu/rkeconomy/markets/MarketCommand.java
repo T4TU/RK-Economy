@@ -88,7 +88,7 @@ public class MarketCommand implements CommandExecutor {
 													player.sendMessage(tc2 + " Nimi: §cEi nimeä");
 												}
 											}
-											player.sendMessage(tc2 + " Rahaa tuotettu: " + tc1 + marketStall.getProfit() + "£");
+											player.sendMessage(tc2 + " Rahaa tuotettu: " + tc1 + Economy.moneyAsString(marketStall.getProfit()) + "£");
 											player.sendMessage(tc2 + " Vuokra-aikaa jäljellä: " + tc1 + CoreUtils.getDaysAndHoursAndMinsFromMillis(l));
 											player.sendMessage("");
 										}
@@ -236,7 +236,7 @@ public class MarketCommand implements CommandExecutor {
 								if (marketStall.isRented() && marketStall.getOwnerUuid().equals(player.getUniqueId().toString())) {
 									InventoryGUI gui = new InventoryGUI(45, marketStall.getType().getFriendlyName());
 									List<String> lore = Arrays.asList("", "§aOmistaja: §7" + player.getName(), "§aMyyntipisteitä: §7" + marketStall.getSellingPoints().size() + " kpl", 
-											"§aRahaa tuotettu: §7" + marketStall.getProfit() + "£", "§aAikaa jäljellä: §7" + 
+											"§aRahaa tuotettu: §7" + Economy.moneyAsString(marketStall.getProfit()) + "£", "§aAikaa jäljellä: §7" + 
 											CoreUtils.getDaysAndHoursAndMinsFromMillis(marketStall.getExpires() - System.currentTimeMillis()));
 									if (marketStall.getType() == MarketStallType.LIIKEKIINTEISTÖ) {
 										String name = "§cEi nimeä";
@@ -244,7 +244,7 @@ public class MarketCommand implements CommandExecutor {
 											name = ChatColor.translateAlternateColorCodes('&', marketStall.getName());
 										}
 										lore = Arrays.asList("", "§aOmistaja: §7" + player.getName(), "§aNimi: §7" + name, "§aMyyntipisteitä: §7" + marketStall.getSellingPoints().size() + " kpl", 
-												"§aRahaa tuotettu: §7" + marketStall.getProfit() + "£", "§aAikaa jäljellä: §7" + 
+												"§aRahaa tuotettu: §7" + Economy.moneyAsString(marketStall.getProfit()) + "£", "§aAikaa jäljellä: §7" + 
 												CoreUtils.getDaysAndHoursAndMinsFromMillis(marketStall.getExpires() - System.currentTimeMillis()));
 									}
 									gui.addItem(CoreUtils.getItem(Material.BOOK, "§a" + marketStall.getType().getFriendlyName(), lore, 1), 13, null);

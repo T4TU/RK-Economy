@@ -88,7 +88,7 @@ public class MarketManager {
 		for (ItemFrame frame : frames) {
 			frame.setItem(null);
 			SellingPoint sellingPoint = new SellingPoint(i, frame.getLocation().getWorld().getName(), frame.getFacing().toString(), frame.getLocation().getBlockX(), 
-					frame.getLocation().getBlockY(), frame.getLocation().getBlockZ(), 1, 1, null, marketStall, economy);
+					frame.getLocation().getBlockY(), frame.getLocation().getBlockZ(), 1, 10, null, marketStall, economy);
 			sellingPoint.reset();
 			sellingPoints.add(sellingPoint);
 			i++;
@@ -113,7 +113,7 @@ public class MarketManager {
 					String previousOwner = economy.getConfig().getString("stalls." + s + ".previous-owner");
 					boolean rented = economy.getConfig().getBoolean("stalls." + s + ".rented");
 					long expires = economy.getConfig().getLong("stalls." + s + ".expires");
-					double profit = economy.getConfig().getDouble("stalls." + s + ".profit");
+					int profit = economy.getConfig().getInt("stalls." + s + ".profit");
 					Location signLocation = CoreUtils.loadLocation(economy, "stalls." + s + ".sign-location");
 					List<String> history = economy.getConfig().getStringList("stalls." + s + ".history");
 					MarketStall marketStall = new MarketStall(id, type, name, ownerUuid, ownerName, rented, expires, profit, signLocation, null, history, null, previousOwner, economy);
@@ -128,7 +128,7 @@ public class MarketManager {
 							int y = economy.getConfig().getInt(path + ".y");
 							int z = economy.getConfig().getInt(path + ".z");
 							int amount = economy.getConfig().getInt(path + ".amount");
-							double price = economy.getConfig().getDouble(path + ".price");
+							int price = economy.getConfig().getInt(path + ".price");
 							int size = 27;
 							ItemStack[] items = new ItemStack[size];
 							for (int i = 0; i < size; i++) {

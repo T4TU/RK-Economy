@@ -33,8 +33,8 @@ import me.t4tu.rkeconomy.shops.ShopManager;
 
 public class Economy extends JavaPlugin {
 	
-	public static final double TORIKOJU_PRICE = 0.1;
-	public static final double LIIKEKIINTEISTÖ_PRICE = 0.1;
+	public static final int TORIKOJU_PRICE = 1;
+	public static final int LIIKEKIINTEISTÖ_PRICE = 1;
 	
 	public static Economy economy;
 	
@@ -317,54 +317,63 @@ public class Economy extends JavaPlugin {
 		return false;
 	}
 	
-	public boolean takeCash(Player player, double amount) {
-		amount = round(amount, 1, RoundingMode.HALF_UP);
+	public boolean takeCash(Player player, int money) {
+		int[] coins = moneyAsCoins(money);
+		int goldCoins = coins[0];
+		int silverCoins = coins[1];
+		int playerGoldCoins = getGoldCoins(player);
+		int playerSilverCoins = getSilverCoins(player);
 		String tc3 = CoreUtils.getErrorBaseColor();
-		int goldCoins = getGoldCoins(player);
-		int silverCoins = getSilverCoins(player);
-		if (goldCoins >= amount) {
-			int goldAmount = round(amount, RoundingMode.UP);
-			takeGoldCoins(player, goldAmount);
-			ItemStack change = getSilverCoin(round((goldAmount - amount) * 10, RoundingMode.DOWN));
-			if (change.getAmount() != 0) {
+		if (playerSilverCoins >= money) {
+			takeSilverCoins(player, money);
+			return true;
+		}
+		else if (playerGoldCoins * 10 >= money) {
+			if (silverCoins == 0) {
+				takeGoldCoins(player, goldCoins);
+				return true;
+			}
+			else {
+				takeGoldCoins(player, goldCoins + 1);
+				ItemStack change = getSilverCoin(10 - silverCoins);
 				if (CoreUtils.hasEnoughRoom(player, change, change.getAmount())) {
 					player.getInventory().addItem(change);
 				}
 				else {
-					player.getInventory().addItem(getGoldCoin(goldAmount));
+					player.getInventory().addItem(getGoldCoin(goldCoins + 1));
 					player.sendMessage(tc3 + "Tavaraluettelossasi ei ole tarpeeksi tilaa!");
 					return false;
 				}
+				return true;
 			}
-			return true;
 		}
-		else if (goldCoins + (silverCoins / 10d) >= amount) {
-			takeGoldCoins(player, goldCoins);
-			takeSilverCoins(player, round((amount - goldCoins) * 10, RoundingMode.DOWN));
+		else if (playerGoldCoins * 10 + playerSilverCoins >= money) {
+			takeGoldCoins(player, playerGoldCoins);
+			takeSilverCoins(player, money - playerGoldCoins * 10);
 			return true;
 		}
 		player.sendMessage(tc3 + "Sinulla ei ole tarpeeksi käteistä rahaa!");
 		return false;
 	}
 	
-	public double applyMultiplier(double price) {
-		if (price < 5) {
-			return round(price * getConfig().getDouble("multipliers.1"), 1, RoundingMode.HALF_UP);
+	public int applyMultiplier(int price) {
+		if (price < 50) {
+			return round(price * getConfig().getDouble("multipliers.1"), RoundingMode.HALF_UP);
 		}
-		if (price < 20) {
-			return round(price * getConfig().getDouble("multipliers.2"), 1, RoundingMode.HALF_UP);
+		if (price < 200) {
+			return round(price * getConfig().getDouble("multipliers.2"), RoundingMode.HALF_UP);
 		}
-		if (price < 60) {
-			return round(price * getConfig().getDouble("multipliers.3"), 1, RoundingMode.HALF_UP);
+		if (price < 600) {
+			return round(price * getConfig().getDouble("multipliers.3"), RoundingMode.HALF_UP);
 		}
-		if (price < 115) {
-			return round(price * getConfig().getDouble("multipliers.4"), 1, RoundingMode.HALF_UP);
+		if (price < 1150) {
+			return round(price * getConfig().getDouble("multipliers.4"), RoundingMode.HALF_UP);
 		}
-		if (price < 550) {
-			return round(price * getConfig().getDouble("multipliers.5"), 1, RoundingMode.HALF_UP);
+		if (price < 5500) {
+			return round(price * getConfig().getDouble("multipliers.5"), RoundingMode.HALF_UP);
 		}
 		else {
-			return round(price * getConfig().getDouble("multipliers.6"), 1, RoundingMode.HALF_UP);
+			return round(price * getConfig().getDouble("multipliers.6"), RoundingMode.HALF_UP);
 		}
 	}
 	
@@ -373,49 +382,71 @@ public class Economy extends JavaPlugin {
 		return statsData != null;
 	}
 	
-	public static double getMoney(Player player) {
+	public static int getMoney(Player player) {
 		MySQLResult statsData = MySQLUtils.get("SELECT money FROM player_stats WHERE uuid=?", player.getUniqueId().toString());
 		if (statsData != null) {
-			return round(statsData.getDouble(0, "money"), 1, RoundingMode.HALF_UP);
+			return statsData.getInt(0, "money");
 		}
 		return 0;
 	}
 	
-	public static double getMoney(String name) {
+	public static int getMoney(String name) {
 		MySQLResult statsData = MySQLUtils.get("SELECT money FROM player_stats WHERE name=?", name);
 		if (statsData != null) {
-			return round(statsData.getDouble(0, "money"), 1, RoundingMode.HALF_UP);
+			return statsData.getInt(0, "money");
 		}
 		return 0;
 	}
 	
-	public static void setMoney(Player player, double money) {
-		money = round(money, 1, RoundingMode.HALF_UP);
+	public static void setMoney(Player player, int money) {
 		MySQLUtils.set("UPDATE player_stats SET money=" + money + " WHERE uuid=?", player.getUniqueId().toString());
 	}
 	
-	public static void setMoney(String name, double money) {
-		money = round(money, 1, RoundingMode.HALF_UP);
+	public static void setMoney(String name, int money) {
 		MySQLUtils.set("UPDATE player_stats SET money=" + money + " WHERE name=?", name);
 	}
 	
-	public static void addMoney(Player player, double money) {
-		money = round(money, 1, RoundingMode.HALF_UP);
+	public static void addMoney(Player player, int money) {
 		MySQLUtils.set("UPDATE player_stats SET money=money+" + money + " WHERE uuid=?", player.getUniqueId().toString());
 	}
 	
-	public static void addMoney(String name, double money) {
-		money = round(money, 1, RoundingMode.HALF_UP);
+	public static void addMoney(String name, int money) {
 		MySQLUtils.set("UPDATE player_stats SET money=money+" + money + " WHERE name=?", name);
 	}
 	
-	public static double getStateMoney() {
-		return economy.getConfig().getDouble("state-money");
+	public static int getStateMoney() {
+		return economy.getConfig().getInt("state-money");
 	}
 	
-	public static void setStateMoney(double money) {
+	public static void setStateMoney(int money) {
 		economy.getConfig().set("state-money", money);
 		economy.saveConfig();
+	}
+	
+	public static int moneyAsInt(int money) {
+		return money * 10;
+	}
+	
+	public static int moneyAsInt(double money) {
+		return round(money * 10, RoundingMode.HALF_UP);
+	}
+	
+	public static int[] moneyAsCoins(int money) {
+		if (money < 0) {
+			money = -money;
+		}
+		int[] coins = new int[2];
+		coins[0] = money / 10;
+		coins[1] = money - (coins[0] * 10);
+		return coins;
+	}
+	
+	public static String moneyAsString(int money) {
+		int[] coins = moneyAsCoins(money);
+		if (money < 0) {
+			return "-" + coins[0] + "," + coins[1];
+		}
+		return coins[0] + "," + coins[1];
 	}
 	
 	public static Double round(Double value, int scale, RoundingMode roundingMode) {

@@ -154,12 +154,12 @@ public class ShopCommand implements CommandExecutor {
 							try {
 								int id = Integer.parseInt(args[1]);
 								int slot = Integer.parseInt(args[2]);
-								double price = Double.parseDouble(args[3]);
+								int price = Economy.moneyAsInt(Double.parseDouble(args[3]));
 								if (economy.getShopManager().getShopById(id) != null) {
 									if (slot >= 0 && slot < economy.getShopManager().getShopById(id).getSize()) {
 										economy.getConfig().set("shops." + id + ".prices." + slot, price);
 										economy.saveConfig();
-										p.sendMessage(tc2 + "Asetettiin kaupan #" + id + " slotin " + slot + " hinnaksi " + price + "£!");
+										p.sendMessage(tc2 + "Asetettiin kaupan #" + id + " slotin " + slot + " hinnaksi " + Economy.moneyAsString(price) + "£!");
 										economy.getShopManager().getShopById(id).save();
 									}
 									else {

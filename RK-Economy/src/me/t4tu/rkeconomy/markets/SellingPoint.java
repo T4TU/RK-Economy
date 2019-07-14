@@ -19,12 +19,12 @@ public class SellingPoint {
 	private String facing;
 	private int x, y, z;
 	private int amount;
-	private double price;
+	private int price;
 	private Inventory inventory;
 	private MarketStall owner;
 	private Economy economy;
 	
-	public SellingPoint(int id, String world, String facing, int x, int y, int z, int amount, double price, Inventory inventory, MarketStall owner, Economy economy) {
+	public SellingPoint(int id, String world, String facing, int x, int y, int z, int amount, int price, Inventory inventory, MarketStall owner, Economy economy) {
 		this.id = id;
 		this.world = world;
 		this.facing = facing;
@@ -52,7 +52,7 @@ public class SellingPoint {
 	
 	public void reset() {
 		amount = 1;
-		price = 1;
+		price = 10;
 		inventory = Bukkit.createInventory(null, 27, "Muokkaa myyntipistettä");
 		inventory.setItem(25, CoreUtils.getItem(Material.OAK_SIGN, "§a§lHinnan tyyppi", Arrays.asList("§a> £/1kpl <", "§7  £/10kpl", "§7  £/64kpl"), 1));
 		inventory.setItem(26, CoreUtils.getItem(Material.NAME_TAG, "§a§lAseta hinta", Arrays.asList("§7Aseta tämän myyntipisteen", "§7hinta klikkaamalla tästä!"), 1));
@@ -90,11 +90,11 @@ public class SellingPoint {
 		this.amount = amount;
 	}
 	
-	public double getPrice() {
+	public int getPrice() {
 		return price;
 	}
 	
-	public void setPrice(double price) {
+	public void setPrice(int price) {
 		this.price = price;
 	}
 	

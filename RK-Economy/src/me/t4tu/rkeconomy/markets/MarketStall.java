@@ -20,7 +20,7 @@ public class MarketStall {
 	private String ownerName;
 	private boolean rented;
 	private long expires;
-	private double profit;
+	private int profit;
 	private Location signLocation;
 	private List<SellingPoint> sellingPoints;
 	private List<String> history;
@@ -28,7 +28,7 @@ public class MarketStall {
 	private String previousOwner;
 	private Economy economy;
 	
-	public MarketStall(int id, MarketStallType type, String name, String ownerUuid, String ownerName, boolean rented, long expires, double profit, Location signLocation, 
+	public MarketStall(int id, MarketStallType type, String name, String ownerUuid, String ownerName, boolean rented, long expires, int profit, Location signLocation, 
 			List<SellingPoint> sellingPoints, List<String> history, List<ItemStack> lostAndFound, String previousOwner, Economy economy) {
 		this.id = id;
 		this.type = type;
@@ -164,11 +164,11 @@ public class MarketStall {
 		this.expires = expires;
 	}
 	
-	public double getProfit() {
+	public int getProfit() {
 		return profit;
 	}
 	
-	public void setProfit(double profit) {
+	public void setProfit(int profit) {
 		this.profit = profit;
 	}
 	

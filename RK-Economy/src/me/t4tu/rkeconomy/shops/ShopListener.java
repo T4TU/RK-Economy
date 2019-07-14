@@ -72,7 +72,7 @@ public class ShopListener implements Listener {
 					if (e.getCurrentItem().getItemMeta().getDisplayName().contains("§6 ")) {
 						ItemStack original = shop.getInventory().getItem(slot);
 						String name = e.getCurrentItem().getItemMeta().getDisplayName().split("§6 ")[0];
-						double price = economy.applyMultiplier(shop.getPrice(slot));
+						int price = economy.applyMultiplier(shop.getPrice(slot));
 						player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_TRADE, 1, 1);
 						player.sendMessage("");
 						if (original.getAmount() == 1) {
@@ -152,7 +152,7 @@ public class ShopListener implements Listener {
 				e.setCancelled(true);
 				ItemStack item = economy.getShopManager().getBuyers().get(key).clone();
 				String name = key.split(":")[1].replace("=^=", ":");
-				double price = Double.parseDouble(key.split(":")[2]);
+				int price = Integer.parseInt(key.split(":")[2]);
 				economy.getShopManager().getBuyers().remove(key);
 				
 				int amount = 0;
@@ -174,10 +174,11 @@ public class ShopListener implements Listener {
 				
 				if (CoreUtils.hasEnoughRoom(player, item, amount, economy.SILVER_COIN, 9)) {
 					if (economy.takeCash(player, price * amount)) {
+						Economy.setStateMoney(Economy.getStateMoney() + price * amount);
 						player.getInventory().addItem(item);
 						player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_YES, 1, 1);
-						player.sendMessage(tc2 + "Ostit " + tc1 + item.getAmount() + tc2 + " kappaletta tuotetta " + tc1 + name + tc2 + " hintaan " + tc1 + price * amount + "£" + tc2 + "!");
-						Economy.setStateMoney(Economy.getStateMoney() + price * amount);
+						player.sendMessage(tc2 + "Ostit " + tc1 + item.getAmount() + tc2 + " kappaletta tuotetta " + tc1 + name + tc2 + " hintaan " + tc1 + Economy.moneyAsString(price * amount) + 
+								"£" + tc2 + "!");
 					}
 					else {
 						player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
