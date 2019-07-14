@@ -178,7 +178,7 @@ public class ShopListener implements Listener {
 						player.getInventory().addItem(item);
 						player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_YES, 1, 1);
 						player.sendMessage(tc2 + "Ostit " + tc1 + item.getAmount() + tc2 + " kappaletta tuotetta " + tc1 + name + tc2 + " hintaan " + tc1 + Economy.moneyAsString(price * amount) + 
-								"£" + tc2 + "!");
+								tc2 + "!");
 					}
 					else {
 						player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);

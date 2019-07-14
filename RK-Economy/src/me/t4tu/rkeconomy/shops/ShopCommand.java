@@ -159,7 +159,7 @@ public class ShopCommand implements CommandExecutor {
 									if (slot >= 0 && slot < economy.getShopManager().getShopById(id).getSize()) {
 										economy.getConfig().set("shops." + id + ".prices." + slot, price);
 										economy.saveConfig();
-										p.sendMessage(tc2 + "Asetettiin kaupan #" + id + " slotin " + slot + " hinnaksi " + Economy.moneyAsString(price) + "£!");
+										p.sendMessage(tc2 + "Asetettiin kaupan #" + id + " slotin " + slot + " hinnaksi " + Economy.moneyAsString(price) + "!");
 										economy.getShopManager().getShopById(id).save();
 									}
 									else {

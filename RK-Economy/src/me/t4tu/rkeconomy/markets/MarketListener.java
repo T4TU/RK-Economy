@@ -166,20 +166,20 @@ public class MarketListener implements Listener {
 							if (economy.takeCash(player, endPrice)) {
 								String itemName = LanguageHelper.getItemDisplayName(item, "fi_FI");
 								player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
-								player.sendMessage(tc2 + "Ostit " + tc1 + amount + tc2 + " kappaletta tuotetta " + tc1 + itemName + tc2 + " hintaan " + tc1 + Economy.moneyAsString(endPrice) + "£" + tc2 + "!");
+								player.sendMessage(tc2 + "Ostit " + tc1 + amount + tc2 + " kappaletta tuotetta " + tc1 + itemName + tc2 + " hintaan " + tc1 + Economy.moneyAsString(endPrice) + tc2 + "!");
 								player.getInventory().addItem(item);
 								CoreUtils.removeItems(sellingPoint.getInventory(), item, amount);
 								marketStall.setProfit(marketStall.getProfit() + endPrice);
 								SimpleDateFormat f = new SimpleDateFormat("dd.MM.yyyy HH:mm");
 								Date date = new Date(System.currentTimeMillis() + CoreUtils.TIME_OFFSET);
-								String logEntry = "[" + f.format(date) + "] " + player.getName() + ": " + amount + "kpl " + ChatColor.stripColor(itemName) + " (+" + Economy.moneyAsString(endPrice) + "£)";
+								String logEntry = "[" + f.format(date) + "] " + player.getName() + ": " + amount + "kpl " + ChatColor.stripColor(itemName) + " (+" + Economy.moneyAsString(endPrice) + ")";
 								marketStall.getHistory().add(logEntry);
 								marketStall.save();
 								Player owner = Bukkit.getPlayer(UUID.fromString(marketStall.getOwnerUuid()));
 								if (owner != null) {
 									if (SettingsUtils.getSetting(owner, "show_bought_items")) {
 										owner.sendMessage(tc1 + player.getName() + tc2 + " osti sinulta " + tc1 + amount + tc2 + " kappaletta tuotetta " + tc1 + itemName + tc2 + 
-												" hintaan " + tc1 + Economy.moneyAsString(endPrice) + "£" + tc2 + "!");
+												" hintaan " + tc1 + Economy.moneyAsString(endPrice) + tc2 + "!");
 									}
 								}
 								new BukkitRunnable() {
@@ -229,7 +229,7 @@ public class MarketListener implements Listener {
 				SellingPoint sellingPoint = marketStall.getSellingPoint(pointId);
 				if (price > 0) {
 					player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
-					player.sendMessage(tc2 + "Asetettiin myyntipisteen hinnaksi " + tc1 + Economy.moneyAsString(price) + "£" + tc2 + "!");
+					player.sendMessage(tc2 + "Asetettiin myyntipisteen hinnaksi " + tc1 + Economy.moneyAsString(price) + tc2 + "!");
 					sellingPoint.setPrice(price);
 					sellingPoint.save();
 					new BukkitRunnable() {
@@ -286,15 +286,15 @@ public class MarketListener implements Listener {
 					ItemStack item = inventory.getItem(25);
 					List<String> lore = item.getItemMeta().getLore();
 					if (lore.get(0).startsWith("§a")) {
-						inventory.setItem(25, CoreUtils.getItem(Material.OAK_SIGN, "§a§lHinnan tyyppi", Arrays.asList("§7  £/1kpl", "§a> £/10kpl <", "§7  £/64kpl"), 1));
+						inventory.setItem(25, CoreUtils.getItem(Material.OAK_SIGN, "§a§lHinnan tyyppi", Arrays.asList("§7  кк/1kpl", "§a> кк/10kpl <", "§7  кк/64kpl"), 1));
 						sellingPoint.setAmount(10);
 					}
 					else if (lore.get(1).startsWith("§a")) {
-						inventory.setItem(25, CoreUtils.getItem(Material.OAK_SIGN, "§a§lHinnan tyyppi", Arrays.asList("§7  £/1kpl", "§7  £/10kpl", "§a> £/64kpl <"), 1));
+						inventory.setItem(25, CoreUtils.getItem(Material.OAK_SIGN, "§a§lHinnan tyyppi", Arrays.asList("§7  кк/1kpl", "§7  кк/10kpl", "§a> кк/64kpl <"), 1));
 						sellingPoint.setAmount(64);
 					}
 					else {
-						inventory.setItem(25, CoreUtils.getItem(Material.OAK_SIGN, "§a§lHinnan tyyppi", Arrays.asList("§a> £/1kpl <", "§7  £/10kpl", "§7  £/64kpl"), 1));
+						inventory.setItem(25, CoreUtils.getItem(Material.OAK_SIGN, "§a§lHinnan tyyppi", Arrays.asList("§a> кк/1kpl <", "§7  кк/10kpl", "§7  кк/64kpl"), 1));
 						sellingPoint.setAmount(1);
 					}
 					player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 2);
@@ -371,7 +371,7 @@ public class MarketListener implements Listener {
 								t2.setHoverEvent(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Klikkaa tästä esikatsellaksesi tuotetta!").color(ChatColor.YELLOW).create()));
 								t.addExtra(t2);
 								player.spigot().sendMessage(t);
-								player.sendMessage(tc2 + " Hinta: " + tc1 + Economy.moneyAsString(price) + "£/" + amount + "kpl");
+								player.sendMessage(tc2 + " Hinta: " + tc1 + Economy.moneyAsString(price) + "/" + amount + "kpl");
 								player.sendMessage(tc2 + " Varastossa: " + tc1 + amountInStorage + " kpl");
 								player.sendMessage("");
 								if (amountInStorage == 0) {
@@ -432,7 +432,7 @@ public class MarketListener implements Listener {
 						preview = item.clone();
 						preview.setAmount(1);
 						ItemMeta meta = preview.getItemMeta();
-						meta.setDisplayName("§a" + LanguageHelper.getItemDisplayName(preview, "fi_FI") + "§6 " + Economy.moneyAsString(sellingPoint.getPrice()) + "£/" + sellingPoint.getAmount() + "kpl");
+						meta.setDisplayName("§a" + LanguageHelper.getItemDisplayName(preview, "fi_FI") + "§6 " + Economy.moneyAsString(sellingPoint.getPrice()) + "/" + sellingPoint.getAmount() + "kpl");
 						preview.setItemMeta(meta);
 						break;
 					}
@@ -513,9 +513,9 @@ public class MarketListener implements Listener {
 						if (marketStall.getType() == MarketStallType.TORIKOJU) {
 							int price = marketStall.getSellingPoints().size() * Economy.TORIKOJU_PRICE;
 							gui.addItem(CoreUtils.getItem(Material.BOOK, "§a" + marketStall.getType().getFriendlyName(), Arrays.asList("", "§aMyyntipisteitä: §7" + 
-									marketStall.getSellingPoints().size() + " kpl", "§aHinta/päivä: §7" + Economy.moneyAsString(price) + "£"), 1), 13, null);
+									marketStall.getSellingPoints().size() + " kpl", "§aHinta/päivä: §7" + Economy.moneyAsString(price)), 1), 13, null);
 							int price3 = marketStall.getSellingPoints().size() * Economy.TORIKOJU_PRICE * 3;
-							gui.addItem(CoreUtils.getItem(Material.OAK_SIGN, "§a§lVuokraa 3 päiväksi", Arrays.asList("§7Hinta: §a" + Economy.moneyAsString(price3) + "£"), 1), 
+							gui.addItem(CoreUtils.getItem(Material.OAK_SIGN, "§a§lVuokraa 3 päiväksi", Arrays.asList("§7Hinta: §a" + Economy.moneyAsString(price3)), 1), 
 									29, new InventoryGUIAction() {
 								public void onClickAsync() { }
 								public void onClick() {
@@ -524,7 +524,7 @@ public class MarketListener implements Listener {
 								}
 							});
 							int price7 = marketStall.getSellingPoints().size() * Economy.TORIKOJU_PRICE * 7;
-							gui.addItem(CoreUtils.getItem(Material.OAK_SIGN, "§a§lVuokraa 7 päiväksi", Arrays.asList("§7Hinta: §a" + Economy.moneyAsString(price7) + "£"), 1), 
+							gui.addItem(CoreUtils.getItem(Material.OAK_SIGN, "§a§lVuokraa 7 päiväksi", Arrays.asList("§7Hinta: §a" + Economy.moneyAsString(price7)), 1), 
 									31, new InventoryGUIAction() {
 								public void onClickAsync() { }
 								public void onClick() {
@@ -533,7 +533,7 @@ public class MarketListener implements Listener {
 								}
 							});
 							int price14 = marketStall.getSellingPoints().size() * Economy.TORIKOJU_PRICE * 14;
-							gui.addItem(CoreUtils.getItem(Material.OAK_SIGN, "§a§lVuokraa 14 päiväksi", Arrays.asList("§7Hinta: §a" + Economy.moneyAsString(price14) + "£"), 1), 
+							gui.addItem(CoreUtils.getItem(Material.OAK_SIGN, "§a§lVuokraa 14 päiväksi", Arrays.asList("§7Hinta: §a" + Economy.moneyAsString(price14)), 1), 
 									33, new InventoryGUIAction() {
 								public void onClickAsync() { }
 								public void onClick() {
@@ -545,9 +545,9 @@ public class MarketListener implements Listener {
 						else if (marketStall.getType() == MarketStallType.LIIKEKIINTEISTÖ) {
 							int price = marketStall.getSellingPoints().size() * Economy.TORIKOJU_PRICE;
 							gui.addItem(CoreUtils.getItem(Material.BOOK, "§a" + marketStall.getType().getFriendlyName(), Arrays.asList("", "§aMyyntipisteitä: §7" + 
-									marketStall.getSellingPoints().size() + " kpl", "§aHinta/päivä: §7" + Economy.moneyAsString(price) + "£"), 1), 13, null);
+									marketStall.getSellingPoints().size() + " kpl", "§aHinta/päivä: §7" + Economy.moneyAsString(price)), 1), 13, null);
 							int price7 = marketStall.getSellingPoints().size() * Economy.TORIKOJU_PRICE * 7;
-							gui.addItem(CoreUtils.getItem(Material.OAK_SIGN, "§a§lVuokraa 7 päiväksi", Arrays.asList("§7Hinta: §a" + Economy.moneyAsString(price7) + "£"), 1), 
+							gui.addItem(CoreUtils.getItem(Material.OAK_SIGN, "§a§lVuokraa 7 päiväksi", Arrays.asList("§7Hinta: §a" + Economy.moneyAsString(price7)), 1), 
 									29, new InventoryGUIAction() {
 								public void onClickAsync() { }
 								public void onClick() {
@@ -556,7 +556,7 @@ public class MarketListener implements Listener {
 								}
 							});
 							int price14 = marketStall.getSellingPoints().size() * Economy.TORIKOJU_PRICE * 14;
-							gui.addItem(CoreUtils.getItem(Material.OAK_SIGN, "§a§lVuokraa 14 päiväksi", Arrays.asList("§7Hinta: §a" + Economy.moneyAsString(price14) + "£"), 1), 
+							gui.addItem(CoreUtils.getItem(Material.OAK_SIGN, "§a§lVuokraa 14 päiväksi", Arrays.asList("§7Hinta: §a" + Economy.moneyAsString(price14)), 1), 
 									31, new InventoryGUIAction() {
 								public void onClickAsync() { }
 								public void onClick() {
@@ -565,7 +565,7 @@ public class MarketListener implements Listener {
 								}
 							});
 							int price28 = marketStall.getSellingPoints().size() * Economy.TORIKOJU_PRICE * 28;
-							gui.addItem(CoreUtils.getItem(Material.OAK_SIGN, "§a§lVuokraa 28 päiväksi", Arrays.asList("§7Hinta: §a" + Economy.moneyAsString(price28) + "£"), 1), 
+							gui.addItem(CoreUtils.getItem(Material.OAK_SIGN, "§a§lVuokraa 28 päiväksi", Arrays.asList("§7Hinta: §a" + Economy.moneyAsString(price28)), 1), 
 									33, new InventoryGUIAction() {
 								public void onClickAsync() { }
 								public void onClick() {

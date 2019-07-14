@@ -36,7 +36,7 @@ public class SubShop extends Shop {
 						shopMeta.setLore(null);
 					}
 					else {
-						shopMeta.setDisplayName("§a" + LanguageHelper.getItemDisplayName(shopStack, "fi_FI") + "§6 " + Economy.moneyAsString(economy.applyMultiplier(getPrice(x))) + "£");
+						shopMeta.setDisplayName("§a" + LanguageHelper.getItemDisplayName(shopStack, "fi_FI") + "§6 " + Economy.moneyAsString(economy.applyMultiplier(getPrice(x))));
 					}
 					shopStack.setItemMeta(shopMeta);
 					shopInventory.setItem(x, shopStack);

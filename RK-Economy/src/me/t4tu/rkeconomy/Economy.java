@@ -199,7 +199,7 @@ public class Economy extends JavaPlugin {
 		ItemStack coin = new ItemStack(Material.GOLD_NUGGET, amount);
 		ItemMeta meta = coin.getItemMeta();
 		meta.setDisplayName("§6Kultakolikko");
-		meta.setLore(Arrays.asList("§8Arvo: 1£"));
+		meta.setLore(Arrays.asList("§8Arvo: 1кк"));
 		coin.setItemMeta(meta);
 		return coin;
 	}
@@ -212,7 +212,7 @@ public class Economy extends JavaPlugin {
 		ItemStack coin = new ItemStack(Material.IRON_NUGGET, amount);
 		ItemMeta meta = coin.getItemMeta();
 		meta.setDisplayName("§7Hopeakolikko");
-		meta.setLore(Arrays.asList("§8Arvo: 0.1£"));
+		meta.setLore(Arrays.asList("§8Arvo: 0,1кк"));
 		coin.setItemMeta(meta);
 		return coin;
 	}
@@ -444,9 +444,9 @@ public class Economy extends JavaPlugin {
 	public static String moneyAsString(int money) {
 		int[] coins = moneyAsCoins(money);
 		if (money < 0) {
-			return "-" + coins[0] + "," + coins[1];
+			return "-" + coins[0] + "," + coins[1] + "кк";
 		}
-		return coins[0] + "," + coins[1];
+		return coins[0] + "," + coins[1] + "кк";
 	}
 	
 	public static Double round(Double value, int scale, RoundingMode roundingMode) {

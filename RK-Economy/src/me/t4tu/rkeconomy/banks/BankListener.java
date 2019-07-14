@@ -78,7 +78,7 @@ public class BankListener implements Listener {
 					if (economy.takeCash(player, a)) {
 						Economy.setMoney(player, Economy.getMoney(player) + a);
 						player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
-						player.sendMessage(tc2 + "Talletit pankkitilillesi " + tc1 + Economy.moneyAsString(a) + "£" + tc2 + "!");
+						player.sendMessage(tc2 + "Talletit pankkitilillesi " + tc1 + Economy.moneyAsString(a) + tc2 + "!");
 						deposit.remove(player);
 					}
 					else {
@@ -113,7 +113,7 @@ public class BankListener implements Listener {
 							player.getInventory().addItem(economy.getGoldCoin(goldAmount));
 							player.getInventory().addItem(economy.getSilverCoin(silverAmount));
 							player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
-							player.sendMessage(tc2 + "Nostit pankkitililtäsi " + tc1 + Economy.moneyAsString(a) + "£" + tc2 + "!");
+							player.sendMessage(tc2 + "Nostit pankkitililtäsi " + tc1 + Economy.moneyAsString(a) + tc2 + "!");
 							withdraw.remove(player);
 						}
 						else {
@@ -161,7 +161,7 @@ public class BankListener implements Listener {
 			public void run() {
 				
 				gui.addItem(CoreUtils.getItem(Material.BOOK, "§6Pankkitili", Arrays.asList("", "§6Tilin haltija: §7" + player.getName(), "§6Saldo: §7" + 
-						Economy.moneyAsString(Economy.getMoney(player)) + "£"), 1), 13, null);
+						Economy.moneyAsString(Economy.getMoney(player))), 1), 13, null);
 				
 				gui.addItem(CoreUtils.getItem(Material.CHEST, "§6Nosta & talleta rahaa", 
 						Arrays.asList("", "§7Klikkaa hiiren vasemmalla tallettaaksesi rahaa.", "§7Klikkaa hiiren oikealla nostaaksesi rahaa."), 1), 28, new InventoryGUIEventAction() {
@@ -273,7 +273,7 @@ public class BankListener implements Listener {
 							if (CoreUtils.getDisplayName(i).equals("Shekki") && i.getItemMeta().hasLore()) {
 								if (i.getAmount() == 1) {
 									try {
-										int a = Economy.moneyAsInt(Double.parseDouble(i.getItemMeta().getLore().get(0).split("§o")[1].split("£")[0]));
+										int a = Economy.moneyAsInt(Double.parseDouble(i.getItemMeta().getLore().get(0).split("§o")[1].split("кк")[0].replace(",", ".")));
 										String receiver = i.getItemMeta().getLore().get(1).split("§o")[1];
 										String s = i.getItemMeta().getLore().get(2).split("§o")[1];
 										if (receiver.equals(player.getName())) {
@@ -281,11 +281,11 @@ public class BankListener implements Listener {
 												Economy.setMoney(s, Economy.getMoney(s) - a);
 												if (Bukkit.getPlayer(s) != null) {
 													Bukkit.getPlayer(s).playSound(Bukkit.getPlayer(s).getLocation(), Sound.ENTITY_VILLAGER_YES, 1, 1);
-													Bukkit.getPlayer(s).sendMessage(tc2 + player.getName() + " lunasti juuri shekkisi, jonka arvo oli " + tc1 + Economy.moneyAsString(a) + "£" + tc2 + "!");
+													Bukkit.getPlayer(s).sendMessage(tc2 + player.getName() + " lunasti juuri shekkisi, jonka arvo oli " + tc1 + Economy.moneyAsString(a) + tc2 + "!");
 												}
 												Economy.setMoney(player, Economy.getMoney(player) + a);
 												player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
-												player.sendMessage(tc2 + "Lunastit shekin, jonka arvo oli " + tc1 + Economy.moneyAsString(a) + "£" + tc2 + "! Summa lisättiin pankkitilillesi.");
+												player.sendMessage(tc2 + "Lunastit shekin, jonka arvo oli " + tc1 + Economy.moneyAsString(a) + tc2 + "! Summa lisättiin pankkitilillesi.");
 												player.getInventory().setItemInMainHand(null);
 												player.updateInventory();
 											}
