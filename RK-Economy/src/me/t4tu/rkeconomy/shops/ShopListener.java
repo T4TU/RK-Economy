@@ -16,6 +16,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import me.t4tu.rkcore.statistics.ComplexPlayerStatisticsEntry;
+import me.t4tu.rkcore.statistics.Statistic;
+import me.t4tu.rkcore.statistics.StatisticsManager;
 import me.t4tu.rkcore.utils.CoreUtils;
 import me.t4tu.rkeconomy.Economy;
 
@@ -83,11 +86,12 @@ public class ShopListener implements Listener {
 						}
 						shop.close(player);
 						int random = new Random().nextInt(10000);
-						economy.getShopManager().getBuyers().put(player.getName() + ":" + name.replace(":", "=^=") + ":" + price + ":" + random, original);
+						String s = player.getName() + ":" + name.replace(":", "=^=") + ":" + price + ":" + shop.getId() + ":" + random;
+						economy.getShopManager().getBuyers().put(s, original);
 						new BukkitRunnable() {
 							public void run() {
-								if (economy.getShopManager().getBuyers().containsKey(player.getName() + ":" + name.replace(":", "=^=") + ":" + price + ":" + random)) {
-									economy.getShopManager().getBuyers().remove(player.getName() + ":" + name.replace(":", "=^=") + ":" + price + ":" + random);
+								if (economy.getShopManager().getBuyers().containsKey(s)) {
+									economy.getShopManager().getBuyers().remove(s);
 									player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
 									player.sendMessage(tc3 + "Ostaminen peruttu!");
 								}
@@ -153,6 +157,7 @@ public class ShopListener implements Listener {
 				ItemStack item = economy.getShopManager().getBuyers().get(key).clone();
 				String name = key.split(":")[1].replace("=^=", ":");
 				int price = Integer.parseInt(key.split(":")[2]);
+				int shopId = Integer.parseInt(key.split(":")[3]);
 				economy.getShopManager().getBuyers().remove(key);
 				
 				int amount = 0;
@@ -170,14 +175,16 @@ public class ShopListener implements Listener {
 					return;
 				}
 				
-				item.setAmount(item.getAmount() * amount);
+				int itemAmount = item.getAmount() * amount;
+				item.setAmount(itemAmount);
 				
-				if (CoreUtils.hasEnoughRoom(player, item, amount, economy.SILVER_COIN, 9)) {
+				if (CoreUtils.hasEnoughRoom(player, item, itemAmount, economy.SILVER_COIN, 9)) {
 					if (economy.takeCash(player, price * amount)) {
 						Economy.setStateMoney(Economy.getStateMoney() + price * amount);
+						StatisticsManager.incrementStatistics(new ComplexPlayerStatisticsEntry(Statistic.MONEY_USED_IN_SHOP, price * amount, player.getUniqueId().toString(), shopId));
 						player.getInventory().addItem(item);
 						player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_YES, 1, 1);
-						player.sendMessage(tc2 + "Ostit " + tc1 + item.getAmount() + tc2 + " kappaletta tuotetta " + tc1 + name + tc2 + " hintaan " + tc1 + Economy.moneyAsString(price * amount) + 
+						player.sendMessage(tc2 + "Ostit " + tc1 + itemAmount + tc2 + " kappaletta tuotetta " + tc1 + name + tc2 + " hintaan " + tc1 + Economy.moneyAsString(price * amount) + 
 								tc2 + "!");
 					}
 					else {

@@ -41,6 +41,9 @@ import com.meowj.langutils.lang.LanguageHelper;
 
 import me.t4tu.rkcore.inventories.InventoryGUI;
 import me.t4tu.rkcore.inventories.InventoryGUIAction;
+import me.t4tu.rkcore.statistics.ComplexPlayerStatisticsEntry;
+import me.t4tu.rkcore.statistics.Statistic;
+import me.t4tu.rkcore.statistics.StatisticsManager;
 import me.t4tu.rkcore.utils.CoreUtils;
 import me.t4tu.rkcore.utils.MySQLUtils;
 import me.t4tu.rkcore.utils.SettingsUtils;
@@ -187,6 +190,8 @@ public class MarketListener implements Listener {
 										MySQLUtils.set("UPDATE player_stats SET money=money+" + endPrice + " WHERE uuid=?", marketStall.getOwnerUuid());
 									}
 								}.runTaskAsynchronously(economy);
+								StatisticsManager.incrementStatistics(new ComplexPlayerStatisticsEntry(Statistic.MONEY_USED_IN_MARKET_STALL, endPrice, player.getUniqueId().toString(), stallId));
+								StatisticsManager.incrementStatistics(new ComplexPlayerStatisticsEntry(Statistic.MONEY_EARNED_FROM_MARKET_STALL, endPrice, marketStall.getOwnerUuid(), stallId));
 							}
 							else {
 								player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
