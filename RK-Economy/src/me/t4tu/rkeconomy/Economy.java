@@ -42,6 +42,7 @@ public class Economy extends JavaPlugin {
 	public final ItemStack SILVER_COIN = getSilverCoin();
 	
 	private EconomyCommand economyCommand;
+	private EconomyListener economyListener;
 	private BankListener bankListener;
 	private MarketManager marketManager;
 	private MarketCommand marketCommand;
@@ -66,6 +67,7 @@ public class Economy extends JavaPlugin {
 		
 		economy = this;
 		economyCommand = new EconomyCommand(this);
+		economyListener = new EconomyListener(this);
 		bankListener = new BankListener(this);
 		marketManager = new MarketManager(this);
 		marketCommand = new MarketCommand(this);
@@ -77,6 +79,7 @@ public class Economy extends JavaPlugin {
 		marketManager.loadMarketStallsFromConfig();
 		shopManager.loadShopsFromConfig();
 		
+		Bukkit.getPluginManager().registerEvents(economyListener, this);
 		Bukkit.getPluginManager().registerEvents(bankListener, this);
 		Bukkit.getPluginManager().registerEvents(marketListener, this);
 		Bukkit.getPluginManager().registerEvents(shopListener, this);
@@ -161,6 +164,10 @@ public class Economy extends JavaPlugin {
 	
 	public EconomyCommand getEconomyCommand() {
 		return economyCommand;
+	}
+	
+	public EconomyListener getEconomyListener() {
+		return economyListener;
 	}
 	
 	public BankListener getBankListener() {
