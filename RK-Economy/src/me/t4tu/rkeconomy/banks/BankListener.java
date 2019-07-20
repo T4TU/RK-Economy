@@ -179,7 +179,7 @@ public class BankListener implements Listener {
 										public void run() {
 											if (deposit.containsKey(player) && deposit.get(player) == identifier) {
 												player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
-												player.sendMessage(tc3 + "Rahan nostaminen peruttu!");
+												player.sendMessage(tc3 + "Rahan tallettaminen peruttu!");
 												deposit.remove(player);
 											}
 										}
