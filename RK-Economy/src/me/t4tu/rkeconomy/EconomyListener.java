@@ -19,7 +19,7 @@ public class EconomyListener implements Listener {
 	public void onItemCraft(CraftItemEvent e) {
 		boolean sendMessage = false;
 		for (ItemStack item : e.getInventory().getMatrix()) {
-			if (item.isSimilar(economy.GOLD_COIN) || item.isSimilar(economy.SILVER_COIN)) {
+			if (CoreUtils.isNotAir(item) && (item.isSimilar(economy.GOLD_COIN) || item.isSimilar(economy.SILVER_COIN))) {
 				e.setCancelled(true);
 				sendMessage = true;
 			}
