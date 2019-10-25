@@ -83,7 +83,7 @@ public class ShopManager {
 	}
 	
 	public Shop newShop(int id, String name, int rows, String trigger) {
-		Shop shop = new Shop(id, name, rows * 9, ChatColor.translateAlternateColorCodes('&', trigger), economy);
+		Shop shop = new Shop(id, name, rows * 9, ChatColor.translateAlternateColorCodes('&', trigger), false, economy);
 		shops.add(shop);
 		getConfig().set("shops." + id + ".name", name);
 		getConfig().set("shops." + id + ".rows", rows);
@@ -94,7 +94,7 @@ public class ShopManager {
 	}
 	
 	public Shop newSubShop(int id, String name, int rows, int parentId) {
-		SubShop shop = new SubShop(id, name, rows * 9, parentId, economy);
+		SubShop shop = new SubShop(id, name, rows * 9, false, parentId, economy);
 		shops.add(shop);
 		getConfig().set("shops." + id + ".name", name);
 		getConfig().set("shops." + id + ".rows", rows);
@@ -117,6 +117,7 @@ public class ShopManager {
 				try {
 					int id = Integer.parseInt(s);
 					int rows = getConfig().getInt("shops." + s + ".rows");
+					boolean disabled = getConfig().getBoolean("shops." + s + ".disabled");
 					String name = getConfig().getString("shops." + s + ".name");
 					if (getConfig().contains("shops." + s + ".parent-id")) {
 						int parentId = getConfig().getInt("shops." + s + ".parent-id");
@@ -124,7 +125,7 @@ public class ShopManager {
 						for (int x = 0; x < rows * 9; x++) {
 							items[x] = (ItemStack) getConfig().getList("shops." + s + ".items").get(x);
 						}
-						shops.add(new SubShop(id, name, rows * 9, parentId, items, economy));
+						shops.add(new SubShop(id, name, rows * 9, disabled, parentId, items, economy));
 					}
 					else {
 						String trigger = ChatColor.translateAlternateColorCodes('&', getConfig().getString("shops." + s + ".trigger"));
@@ -132,7 +133,7 @@ public class ShopManager {
 						for (int x = 0; x < rows * 9; x++) {
 							items[x] = (ItemStack) getConfig().getList("shops." + s + ".items").get(x);
 						}
-						shops.add(new Shop(id, name, rows * 9, trigger, items, economy));
+						shops.add(new Shop(id, name, rows * 9, trigger, disabled, items, economy));
 					}
 				}
 				catch (Exception e) {

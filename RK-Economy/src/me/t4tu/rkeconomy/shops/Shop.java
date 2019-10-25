@@ -18,26 +18,29 @@ public class Shop {
 	protected int size;
 	protected String name;
 	protected String trigger;
+	protected boolean disabled;
 	protected Inventory inventory;
 	protected Inventory shopInventory;
 	protected Economy economy;
 	
-	public Shop(int id, String name, int size, String trigger, Economy economy) {
+	public Shop(int id, String name, int size, String trigger, boolean disabled, Economy economy) {
 		this.id = id;
 		this.name = name;
 		this.size = size;
 		this.trigger = trigger;
+		this.disabled = disabled;
 		this.economy = economy;
 		inventory = Bukkit.createInventory(null, size, name);
 		shopInventory = Bukkit.createInventory(null, size, name);
 		sync();
 	}
 	
-	public Shop(int id, String name, int size, String trigger, ItemStack[] items, Economy economy) {
+	public Shop(int id, String name, int size, String trigger, boolean disabled, ItemStack[] items, Economy economy) {
 		this.id = id;
 		this.name = name;
 		this.size = size;
 		this.trigger = trigger;
+		this.disabled = disabled;
 		this.economy = economy;
 		inventory = Bukkit.createInventory(null, size, name);
 		inventory.setContents(items);
@@ -53,7 +56,7 @@ public class Shop {
 				if (stack != null && stack.getType() != null && stack.getType() != Material.AIR) {
 					ItemStack shopStack = stack.clone();
 					ItemMeta shopMeta = shopStack.getItemMeta();
-					if (shopMeta.hasDisplayName() && shopMeta.getDisplayName().startsWith("§9Kategoria: ")) {
+					if (shopMeta.hasDisplayName() && shopMeta.getDisplayName().startsWith("§9")) {
 						shopMeta.setLore(null);
 					}
 					else {
@@ -68,7 +71,9 @@ public class Shop {
 	}
 	
 	public void open(Player player) {
-		player.openInventory(shopInventory);
+		if (!disabled) {
+			player.openInventory(shopInventory);
+		}
 	}
 	
 	public void close(Player player) {
@@ -124,6 +129,21 @@ public class Shop {
 	
 	public void setTrigger(String trigger) {
 		this.trigger = trigger;
+	}
+	
+	public boolean isDisabled() {
+		return disabled;
+	}
+	
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
+		if (disabled) {
+			economy.getConfig().set("shops." + id + ".disabled", disabled);
+		}
+		else {
+			economy.getConfig().set("shops." + id + ".disabled", null);
+		}
+		economy.saveConfig();
 	}
 	
 	public Inventory getInventory() {

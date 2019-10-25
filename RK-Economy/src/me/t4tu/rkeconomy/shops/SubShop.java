@@ -13,13 +13,13 @@ public class SubShop extends Shop {
 	
 	private int parentId;
 	
-	public SubShop(int id, String name, int size, int parentId, Economy economy) {
-		super(id, name, size, null, economy);
+	public SubShop(int id, String name, int size, boolean disabled, int parentId, Economy economy) {
+		super(id, name, size, null, disabled, economy);
 		this.parentId = parentId;
 	}
 
-	public SubShop(int id, String name, int size, int parentId, ItemStack[] items, Economy economy) {
-		super(id, name, size, null, items, economy);
+	public SubShop(int id, String name, int size, boolean disabled, int parentId, ItemStack[] items, Economy economy) {
+		super(id, name, size, null, disabled, items, economy);
 		this.parentId = parentId;
 	}
 	
@@ -32,7 +32,7 @@ public class SubShop extends Shop {
 				if (stack != null && stack.getType() != null && stack.getType() != Material.AIR) {
 					ItemStack shopStack = stack.clone();
 					ItemMeta shopMeta = shopStack.getItemMeta();
-					if (shopMeta.hasDisplayName() && shopMeta.getDisplayName().startsWith("§9Kategoria: ")) {
+					if (shopMeta.hasDisplayName() && shopMeta.getDisplayName().startsWith("§9")) {
 						shopMeta.setLore(null);
 					}
 					else {

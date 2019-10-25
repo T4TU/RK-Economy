@@ -17,6 +17,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -291,15 +292,15 @@ public class MarketListener implements Listener {
 					ItemStack item = inventory.getItem(25);
 					List<String> lore = item.getItemMeta().getLore();
 					if (lore.get(0).startsWith("§a")) {
-						inventory.setItem(25, CoreUtils.getItem(Material.OAK_SIGN, "§a§lHinnan tyyppi", Arrays.asList("§7  кк/1kpl", "§a> кк/10kpl <", "§7  кк/64kpl"), 1));
+						inventory.setItem(25, CoreUtils.getItem(Material.OAK_SIGN, "§a§lHinnan tyyppi", Arrays.asList("§7  кк/kpl", "§a> кк/10kpl <", "§7  кк/64kpl"), 1));
 						sellingPoint.setAmount(10);
 					}
 					else if (lore.get(1).startsWith("§a")) {
-						inventory.setItem(25, CoreUtils.getItem(Material.OAK_SIGN, "§a§lHinnan tyyppi", Arrays.asList("§7  кк/1kpl", "§7  кк/10kpl", "§a> кк/64kpl <"), 1));
+						inventory.setItem(25, CoreUtils.getItem(Material.OAK_SIGN, "§a§lHinnan tyyppi", Arrays.asList("§7  кк/kpl", "§7  кк/10kpl", "§a> кк/64kpl <"), 1));
 						sellingPoint.setAmount(64);
 					}
 					else {
-						inventory.setItem(25, CoreUtils.getItem(Material.OAK_SIGN, "§a§lHinnan tyyppi", Arrays.asList("§a> кк/1kpl <", "§7  кк/10kpl", "§7  кк/64kpl"), 1));
+						inventory.setItem(25, CoreUtils.getItem(Material.OAK_SIGN, "§a§lHinnan tyyppi", Arrays.asList("§a> кк/kpl <", "§7  кк/10kpl", "§7  кк/64kpl"), 1));
 						sellingPoint.setAmount(1);
 					}
 					player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 2);
@@ -364,6 +365,7 @@ public class MarketListener implements Listener {
 								int price = sellingPoint.getPrice();
 								int amount = sellingPoint.getAmount();
 								int amountInStorage = sellingPoint.getAmountInStorage();
+								String amountString = amount == 1 ? "/kpl" : "/" + amount + "kpl (myydään erissä)";
 								player.sendMessage("");
 								player.sendMessage(tc2 + "§m----------" + tc1 + " Osta tuotetta " + tc2 + "§m----------");
 								player.sendMessage("");
@@ -376,7 +378,7 @@ public class MarketListener implements Listener {
 								t2.setHoverEvent(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Klikkaa tästä esikatsellaksesi tuotetta!").color(ChatColor.YELLOW).create()));
 								t.addExtra(t2);
 								player.spigot().sendMessage(t);
-								player.sendMessage(tc2 + " Hinta: " + tc1 + Economy.moneyAsString(price) + "/" + amount + "kpl");
+								player.sendMessage(tc2 + " Hinta: " + tc1 + Economy.moneyAsString(price) + amountString);
 								player.sendMessage(tc2 + " Varastossa: " + tc1 + amountInStorage + " kpl");
 								player.sendMessage("");
 								if (amountInStorage == 0) {
@@ -434,10 +436,11 @@ public class MarketListener implements Listener {
 				for (int i = 0; i < sellingPoint.getInventory().getContents().length - 2; i++) {
 					ItemStack item = sellingPoint.getInventory().getContents()[i];
 					if (CoreUtils.isNotAir(item)) {
+						String amountString = sellingPoint.getAmount() == 1 ? "/kpl" : "/" + sellingPoint.getAmount() + "kpl";
 						preview = item.clone();
 						preview.setAmount(1);
 						ItemMeta meta = preview.getItemMeta();
-						meta.setDisplayName("§a" + LanguageHelper.getItemDisplayName(preview, "fi_FI") + "§6 " + Economy.moneyAsString(sellingPoint.getPrice()) + "/" + sellingPoint.getAmount() + "kpl");
+						meta.setDisplayName("§a" + LanguageHelper.getItemDisplayName(preview, "fi_FI") + "§6 " + Economy.moneyAsString(sellingPoint.getPrice()) + amountString);
 						preview.setItemMeta(meta);
 						break;
 					}
@@ -464,8 +467,9 @@ public class MarketListener implements Listener {
 					ItemStack item = sellingPoint.getInventory().getItem(i);
 					if (CoreUtils.isNotAir(item)) {
 						if (!first.isSimilar(item)) {
-							Location location = sellingPoint.getLocationCenter();
-							location.getWorld().dropItemNaturally(location, item);
+							Location location = player.getLocation();
+							Item itemEntity = location.getWorld().dropItem(location, item);
+							itemEntity.setPickupDelay(0);
 							sellingPoint.getInventory().setItem(i, null);
 							b = true;
 						}

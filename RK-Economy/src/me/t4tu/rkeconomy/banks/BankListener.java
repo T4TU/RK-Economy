@@ -6,18 +6,22 @@ import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -143,6 +147,62 @@ public class BankListener implements Listener {
 	}
 	
 	@EventHandler
+	public void onPlayerCloseInventory(InventoryCloseEvent e) {
+		if (e.getView().getTitle().equals("§rTalleta rahaa")) {
+			
+			if (!(e.getPlayer() instanceof Player)) {
+				return;
+			}
+			
+			String tc1 = CoreUtils.getHighlightColor();
+			String tc2 = CoreUtils.getBaseColor();
+			String tc3 = CoreUtils.getErrorBaseColor();
+			
+			Player player = (Player) e.getPlayer();
+			
+			int depositAmount = 0;
+			
+			boolean b = false;
+			for (int i = 0; i < e.getView().getTopInventory().getContents().length; i++) {
+				ItemStack item = e.getView().getTopInventory().getItem(i);
+				if (CoreUtils.isNotAir(item)) {
+					if (item.isSimilar(economy.GOLD_COIN)) {
+						int amount = item.getAmount();
+						depositAmount += amount * 10;
+					}
+					else if (item.isSimilar(economy.SILVER_COIN)) {
+						int amount = item.getAmount();
+						depositAmount += amount;
+					}
+					else {
+						Location location = player.getLocation();
+						Item itemEntity = location.getWorld().dropItem(location, item);
+						itemEntity.setPickupDelay(0);
+						b = true;
+					}
+				}
+			}
+			if (b) {
+				player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+				player.sendMessage(tc3 + "Pankkiin voi tallettaa ainoastaan kulta- ja hopeakolikoita!");
+			}
+			
+			if (depositAmount > 0) {
+				final int finalDepositAmount = depositAmount;
+				new BukkitRunnable() {
+					public void run() {
+						Economy.addMoney(player, finalDepositAmount);
+					}
+				}.runTaskAsynchronously(economy);
+				player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 2);
+				player.sendMessage(tc2 + "Talletit pankkitilillesi " + tc1 + Economy.moneyAsString(finalDepositAmount) + tc2 + "!");
+			}
+			
+			e.getView().getTopInventory().clear();
+		}
+	}
+	
+	@EventHandler
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent e) {
 		if (e.getHand() == EquipmentSlot.HAND && CoreUtils.isNPCAndNamed(e.getRightClicked(), "§2Pankkivirkailija")) {
 			openBankInventory(e.getPlayer());
@@ -163,47 +223,61 @@ public class BankListener implements Listener {
 				gui.addItem(CoreUtils.getItem(Material.BOOK, "§6Pankkitili", Arrays.asList("", "§6Tilin haltija: §7" + player.getName(), "§6Saldo: §7" + 
 						Economy.moneyAsString(Economy.getMoney(player))), 1), 13, null);
 				
-				gui.addItem(CoreUtils.getItem(Material.CHEST, "§6Nosta & talleta rahaa", 
-						Arrays.asList("", "§7Klikkaa hiiren vasemmalla tallettaaksesi rahaa.", "§7Klikkaa hiiren oikealla nostaaksesi rahaa."), 1), 28, new InventoryGUIEventAction() {
-							public void onClickAsync() { }
-							public void onClick() { }
-							public void onClickAsync(InventoryClickEvent e) { }
-							public void onClick(InventoryClickEvent e) {
-								int identifier = new Random().nextInt(10000);
-								if (e.getClick() == ClickType.LEFT) {
-									deposit.put(player, identifier);
-									player.sendMessage("");
-									player.sendMessage(tc2 + "Kirjoita " + tc1 + "chattiin" + tc2 + ", kuinka paljon haluat " + tc1 + "tallettaa" + tc2 + " rahaa:");
-									gui.close(player);
-									new BukkitRunnable() {
-										public void run() {
-											if (deposit.containsKey(player) && deposit.get(player) == identifier) {
-												player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
-												player.sendMessage(tc3 + "Rahan tallettaminen peruttu!");
-												deposit.remove(player);
-											}
-										}
-									}.runTaskLater(economy, 140);
-								}
-								else if (e.getClick() == ClickType.RIGHT) {
-									withdraw.put(player, identifier);
-									player.sendMessage("");
-									player.sendMessage(tc2 + "Kirjoita " + tc1 + "chattiin" + tc2 + ", kuinka paljon haluat " + tc1 + "nostaa" + tc2 + " rahaa:");
-									gui.close(player);
-									new BukkitRunnable() {
-										public void run() {
-											if (withdraw.containsKey(player) && withdraw.get(player) == identifier) {
-												player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
-												player.sendMessage(tc3 + "Rahan nostaminen peruttu!");
-												withdraw.remove(player);
-											}
-										}
-									}.runTaskLater(economy, 140);
+				gui.addItem(CoreUtils.getItem(Material.ENDER_CHEST, "§6Nosta rahaa", 
+						Arrays.asList("", "§7Klikkaa nostaaksesi rahaa pankkitililtäsi."), 1), 28, new InventoryGUIEventAction() {
+					public void onClickAsync() { }
+					public void onClick() { }
+					public void onClickAsync(InventoryClickEvent e) { }
+					public void onClick(InventoryClickEvent e) {
+						int identifier = new Random().nextInt(10000);
+						withdraw.put(player, identifier);
+						player.sendMessage("");
+						player.sendMessage(tc2 + "Kirjoita " + tc1 + "chattiin" + tc2 + ", kuinka paljon haluat " + tc1 + "nostaa" + tc2 + " rahaa:");
+						gui.close(player);
+						new BukkitRunnable() {
+							public void run() {
+								if (withdraw.containsKey(player) && withdraw.get(player) == identifier) {
+									player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+									player.sendMessage(tc3 + "Rahan nostaminen peruttu!");
+									withdraw.remove(player);
 								}
 							}
-						});
+						}.runTaskLater(economy, 140);
+					}
+				});
 				
-				gui.addItem(CoreUtils.getItem(Material.GOLD_NUGGET, "§6Vaihda rahaa", Arrays.asList("", "§7Vaihda kultakolikoita hopeakolikoiksi", "§7tai toisinpäin klikkaamalla tästä."), 1), 30, 
+				gui.addItem(CoreUtils.getItem(Material.CHEST, "§6Talleta rahaa", 
+						Arrays.asList("", "§7Klikkaa tallettaaksesi rahaa pankkitilillesi.", "§7(Shift-klikkaa syöttääksesi rahamäärän", "§7suoraan chattiin.)"), 1), 30, new InventoryGUIEventAction() {
+					public void onClickAsync() { }
+					public void onClick() { }
+					public void onClickAsync(InventoryClickEvent e) { }
+					public void onClick(InventoryClickEvent e) {
+						int identifier = new Random().nextInt(10000);
+						if (e.getClick() == ClickType.SHIFT_LEFT || e.getClick() == ClickType.SHIFT_RIGHT) {
+							deposit.put(player, identifier);
+							player.sendMessage("");
+							player.sendMessage(tc2 + "Kirjoita " + tc1 + "chattiin" + tc2 + ", kuinka paljon haluat " + tc1 + "tallettaa" + tc2 + " rahaa:");
+							gui.close(player);
+							player.updateInventory();
+							new BukkitRunnable() {
+								public void run() {
+									if (deposit.containsKey(player) && deposit.get(player) == identifier) {
+										player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+										player.sendMessage(tc3 + "Rahan tallettaminen peruttu!");
+										deposit.remove(player);
+									}
+								}
+							}.runTaskLater(economy, 140);
+						}
+						else {
+							Inventory depositInventory = Bukkit.createInventory(null, 36, "§rTalleta rahaa");
+							player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1, 1);
+							player.openInventory(depositInventory);
+						}
+					}
+				});
+				
+				gui.addItem(CoreUtils.getItem(Material.GOLD_NUGGET, "§6Vaihda rahaa", Arrays.asList("", "§7Vaihda kultakolikoita hopeakolikoiksi", "§7tai toisinpäin klikkaamalla tästä."), 1), 32, 
 						new InventoryGUIAction() {
 					public void onClickAsync() { }
 					public void onClick() {
@@ -266,7 +340,7 @@ public class BankListener implements Listener {
 					}
 				});
 				
-				gui.addItem(CoreUtils.getItem(Material.PAPER, "§6Lunasta shekki", Arrays.asList("", "§7Lunasta kädessä pitelemäsi", "§7shekki klikkaamalla tästä."), 1), 32, new InventoryGUIAction() {
+				gui.addItem(CoreUtils.getItem(Material.PAPER, "§6Lunasta shekki", Arrays.asList("", "§7Lunasta kädessä pitelemäsi shekki", "§7klikkaamalla tästä."), 1), 34, new InventoryGUIAction() {
 					public void onClickAsync() {
 						ItemStack i = player.getInventory().getItemInMainHand();
 						if (CoreUtils.isNotAir(i) && i.getType() == Material.PAPER) {
@@ -323,7 +397,7 @@ public class BankListener implements Listener {
 					public void onClick() { }
 				});
 				
-				gui.addItem(CoreUtils.getItem(Material.WRITABLE_BOOK, "§6Lainat", Arrays.asList("", "§7Tulossa..."), 1), 34, null);
+				//gui.addItem(CoreUtils.getItem(Material.WRITABLE_BOOK, "§6Lainat", Arrays.asList("", "§7Tulossa..."), 1), 34, null);
 			}
 		}.runTaskAsynchronously(economy);
 		

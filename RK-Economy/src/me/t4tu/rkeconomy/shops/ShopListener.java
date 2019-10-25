@@ -46,7 +46,9 @@ public class ShopListener implements Listener {
 			if (e.getClickedInventory() != null && e.getClickedInventory().equals(shop.getShopInventory())) {
 				for (String key : economy.getShopManager().getBuyers().keySet()) {
 					if (key.split(":")[0].equals(player.getName())) {
-						return;
+						economy.getShopManager().getBuyers().remove(key);
+						player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+						player.sendMessage(tc3 + "Ostaminen peruttu!");
 					}
 				}
 				try {
@@ -62,7 +64,7 @@ public class ShopListener implements Listener {
 							return;
 						}
 					}
-					if (e.getCurrentItem().getItemMeta().getDisplayName().startsWith("§9Kategoria: ")) {
+					if (e.getCurrentItem().getItemMeta().getDisplayName().startsWith("§9")) {
 						ItemStack original = shop.getInventory().getItem(slot);
 						int id = Integer.parseInt(original.getItemMeta().getLore().get(0));
 						Shop subShop = economy.getShopManager().getShopById(id);
@@ -108,7 +110,12 @@ public class ShopListener implements Listener {
 	public void onShopOpen(PlayerInteractEntityEvent e) {
 		for (Shop shop : economy.getShopManager().getShops()) {
 			if (shop.getTrigger() != null && CoreUtils.isNPCAndNamed(e.getRightClicked(), shop.getTrigger())) {
-				shop.open(e.getPlayer());
+				if (e.getPlayer().isSneaking() && CoreUtils.hasAdminPowers(e.getPlayer())) {
+					shop.edit(e.getPlayer());
+				}
+				else {
+					shop.open(e.getPlayer());
+				}
 			}
 		}
 	}
@@ -119,9 +126,11 @@ public class ShopListener implements Listener {
 		String tc2 = CoreUtils.getBaseColor();
 		
 		Inventory inventory = e.getInventory();
-		if (economy.getShopManager().getShopByEditInventory(inventory) != null && e.getPlayer() instanceof Player) {
+		Shop shop = economy.getShopManager().getShopByEditInventory(inventory);
+		if (shop != null && e.getPlayer() instanceof Player) {
 			Player player = (Player) e.getPlayer();
-			player.sendMessage(tc2 + "Muokkasit kauppaa! Muista tallentaa muutokset komennolla /shop save tai muuttamalla jonkin tuotteen hintaa!");
+			shop.save();
+			player.sendMessage(tc2 + "Tallennettiin kauppa!");
 		}
 	}
 	

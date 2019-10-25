@@ -54,7 +54,7 @@ public class SellingPoint {
 		amount = 1;
 		price = 10;
 		inventory = Bukkit.createInventory(null, 27, "Muokkaa myyntipistettä");
-		inventory.setItem(25, CoreUtils.getItem(Material.OAK_SIGN, "§a§lHinnan tyyppi", Arrays.asList("§a> кк/1kpl <", "§7  кк/10kpl", "§7  кк/64kpl"), 1));
+		inventory.setItem(25, CoreUtils.getItem(Material.OAK_SIGN, "§a§lHinnan tyyppi", Arrays.asList("§a> кк/kpl <", "§7  кк/10kpl", "§7  кк/64kpl"), 1));
 		inventory.setItem(26, CoreUtils.getItem(Material.NAME_TAG, "§a§lAseta hinta", Arrays.asList("§7Aseta tämän myyntipisteen", "§7hinta klikkaamalla tästä!"), 1));
 	}
 	

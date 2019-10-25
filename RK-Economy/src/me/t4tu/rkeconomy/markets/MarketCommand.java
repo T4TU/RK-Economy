@@ -222,6 +222,23 @@ public class MarketCommand implements CommandExecutor {
 						player.sendMessage(usage + "/kauppa poista <ID>");
 					}
 				}
+				else if ((args[0].equalsIgnoreCase("lähellä") || args[0].equalsIgnoreCase("near")) && CoreUtils.hasRank(player, "ylläpitäjä")) {
+					player.sendMessage("");
+					player.sendMessage(tc2 + "§m----------" + tc1 + " Torikojut ja liikekiinteistöt lähelläsi " + tc2 + "§m----------");
+					player.sendMessage("");
+					if (!economy.getMarketManager().getMarketStalls().isEmpty()) {
+						for (MarketStall stall : economy.getMarketManager().getMarketStalls()) {
+							if (stall.getSignLocation() != null && stall.getSignLocation().getWorld().getName().equals(player.getWorld().getName()) && 
+									stall.getSignLocation().distance(player.getLocation()) <= 10) {
+								player.sendMessage(tc2 + " - " + tc1 + "#" + stall.getId() + " (" + String.format("%.1f", stall.getSignLocation().distance(player.getLocation())) + "m)");
+							}
+						}
+					}
+					else {
+						player.sendMessage(tc3 + " Ei torikojuja tai liikekiinteistöjä 10m säteellä!");
+					}
+					player.sendMessage("");
+				}
 				else if (args[0].equalsIgnoreCase("reload") && CoreUtils.hasRank(player, "ylläpitäjä")) {
 					economy.reloadConfig();
 					economy.getMarketManager().loadMarketStallsFromConfig();
@@ -450,7 +467,7 @@ public class MarketCommand implements CommandExecutor {
 				}
 				else {
 					if (CoreUtils.hasRank(player, "ylläpitäjä")) {
-						player.sendMessage(usage + "/kauppa info/aseta/poista/työkalu/päivitä/reload/tiedot/esikatsele/myyntihistoria/nimeä");
+						player.sendMessage(usage + "/kauppa info/aseta/poista/työkalu/päivitä/lähellä/reload/tiedot/esikatsele/myyntihistoria/nimeä");
 					}
 					else {
 						player.performCommand("kauppa");

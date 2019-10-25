@@ -47,9 +47,10 @@ public class ShopCommand implements CommandExecutor {
 						}
 						else {
 							for (Shop shop : economy.getShopManager().getShops()) {
-								ReflectionUtils.sendChatPacket(p, "[\"\",{\"text\":\"" + tc2 + " - \"},{\"text\":\"" + tc1 + "#" + shop.getId() + ": '" + shop.getName() + 
+								String color = shop.isDisabled() ? tc3 : tc1;
+								ReflectionUtils.sendChatPacket(p, "[\"\",{\"text\":\"" + tc2 + " - \"},{\"text\":\"" + color + "#" + shop.getId() + ": '" + shop.getName() + 
 										"'\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/shop edit " + shop.getId() + 
-										"\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[{\"text\":\"§aMuokkaa kauppaa '" + shop.getName() + 
+										"\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[{\"text\":\"" + color + "Muokkaa kauppaa '" + shop.getName() + 
 										"'\"}]}}}]", ChatMessageType.CHAT);
 							}
 						}
@@ -178,17 +179,44 @@ public class ShopCommand implements CommandExecutor {
 							p.sendMessage(usage + "/shop price <id> <slot> <hinta>");
 						}
 					}
+					else if (args[0].equalsIgnoreCase("disable")) {
+						if (args.length >= 2) {
+							try {
+								int id = Integer.parseInt(args[1]);
+								Shop shop = economy.getShopManager().getShopById(id);
+								if (shop != null) {
+									if (shop.isDisabled()) {
+										shop.setDisabled(false);
+										p.sendMessage(tc2 + "Otettiin käyttöön kauppa ID:llä #" + id + "!");
+									}
+									else {
+										shop.setDisabled(true);
+										p.sendMessage(tc2 + "Poistettiin käytöstä kauppa ID:llä #" + id + "!");
+									}
+								}
+								else {
+									p.sendMessage(tc3 + "Ei löydetty kauppaa antamallasi ID:llä!");
+								}
+							}
+							catch (NumberFormatException e) {
+								p.sendMessage(tc3 + "Virheellinen ID!");
+							}
+						}
+						else {
+							p.sendMessage(usage + "/shop disable <id>");
+						}
+					}
 					else if (args[0].equalsIgnoreCase("reload")) {
 						economy.reloadConfig();
 						economy.getShopManager().loadShopsFromConfig();
 						p.sendMessage(tc2 + "Ladattiin kaupat uudestaan!");
 					}
 					else {
-						p.sendMessage(usage + "/shop list/add/remove/edit/save/price/reload");
+						p.sendMessage(usage + "/shop list/add/remove/edit/save/price/disable/reload");
 					}
 				}
 				else {
-					p.sendMessage(usage + "/shop list/add/remove/edit/save/price/reload");
+					p.sendMessage(usage + "/shop list/add/remove/edit/save/price/disable/reload");
 				}
 			}
 			else {
