@@ -2,6 +2,7 @@ package me.t4tu.rkeconomy.markets;
 
 import java.util.List;
 
+import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -86,21 +87,24 @@ public class MarketStall {
 			Block block = signLocation.getBlock();
 			if (block != null && block.getState() instanceof Sign) {
 				Sign sign = (Sign) block.getState();
-				sign.setLine(0, "§8[" + type.getFriendlyName() + "]");
+				sign.setLine(0, "§0§l[" + type.getFriendlyName() + "]");
 				sign.setLine(1, "");
 				if (rented) {
 					if (name != null && type == MarketStallType.LIIKEKIINTEISTÖ) {
 						sign.setLine(2, ChatColor.translateAlternateColorCodes('&', name));
 						sign.setLine(3, "");
+						sign.setColor(DyeColor.BLACK);
 					}
 					else {
 						sign.setLine(2, ownerName);
 						sign.setLine(3, "");
+						sign.setColor(DyeColor.PURPLE);
 					}
 				}
 				else {
-					sign.setLine(2, "§4Vuokraa");
-					sign.setLine(3, "§4klikkaamalla!");
+					sign.setLine(2, "Vuokraa");
+					sign.setLine(3, "klikkaamalla!");
+					sign.setColor(DyeColor.RED);
 				}
 				sign.update();
 			}
