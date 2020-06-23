@@ -9,6 +9,10 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import com.meowj.langutils.lang.LanguageHelper;
+
 import me.t4tu.rkcore.utils.CoreUtils;
 import me.t4tu.rkeconomy.Economy;
 
@@ -149,5 +153,21 @@ public class SellingPoint {
 			}
 		}
 		return preview;
+	}
+	
+	public void updateFrame() {
+		ItemFrame frame = getFrame();
+		if (frame != null) {
+			frame.setSilent(true);
+			ItemStack preview = getPreviewItemStack();
+			if (preview != null) {
+				preview.setAmount(1);
+				ItemMeta meta = preview.getItemMeta();
+				String amountString = getAmount() == 1 ? "/kpl" : "/" + getAmount() + "kpl";
+				meta.setDisplayName("§a" + LanguageHelper.getItemDisplayName(preview, "fi_FI") + "§6 " + Economy.moneyAsString(getPrice()) + amountString);
+				preview.setItemMeta(meta);
+			}
+			frame.setItem(preview);
+		}
 	}
 }

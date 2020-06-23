@@ -33,9 +33,9 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.meowj.langutils.lang.LanguageHelper;
@@ -191,6 +191,7 @@ public class MarketListener implements Listener {
 										MySQLUtils.set("UPDATE player_stats SET money=money+" + endPrice + " WHERE uuid=?", marketStall.getOwnerUuid());
 									}
 								}.runTaskAsynchronously(economy);
+								sellingPoint.updateFrame();
 								StatisticsManager.incrementStatistics(new ComplexPlayerStatisticsEntry(Statistic.MONEY_USED_IN_MARKET_STALL, endPrice, player.getUniqueId().toString(), stallId));
 								StatisticsManager.incrementStatistics(new ComplexPlayerStatisticsEntry(Statistic.MONEY_EARNED_FROM_MARKET_STALL, endPrice, marketStall.getOwnerUuid(), stallId));
 							}
@@ -339,7 +340,7 @@ public class MarketListener implements Listener {
 		
 		Player player = e.getPlayer();
 		
-		if (e.getRightClicked() instanceof ItemFrame) {
+		if (e.getRightClicked() instanceof ItemFrame && e.getHand() == EquipmentSlot.HAND) {
 			ItemFrame frame = (ItemFrame) e.getRightClicked();
 			SellingPoint sellingPoint = economy.getMarketManager().getSellingPointByFrame(frame);
 			if (sellingPoint != null) {
@@ -353,7 +354,14 @@ public class MarketListener implements Listener {
 					else {
 						new BukkitRunnable() {
 							public void run() {
+								int amountInStorage = sellingPoint.getAmountInStorage();
+								if (amountInStorage == 0) {
+									return;
+								}
 								String ownerName = marketStall.getOwnerName();
+								int price = sellingPoint.getPrice();
+								int amount = sellingPoint.getAmount();
+								String amountString = amount == 1 ? "/kpl" : "/" + amount + "kpl (myydään erissä)";
 								ItemStack preview = sellingPoint.getPreviewItemStack();
 								String product;
 								if (preview != null) {
@@ -362,10 +370,6 @@ public class MarketListener implements Listener {
 								else {
 									product = "§cTuntematon";
 								}
-								int price = sellingPoint.getPrice();
-								int amount = sellingPoint.getAmount();
-								int amountInStorage = sellingPoint.getAmountInStorage();
-								String amountString = amount == 1 ? "/kpl" : "/" + amount + "kpl (myydään erissä)";
 								player.sendMessage("");
 								player.sendMessage(tc2 + "§m----------" + tc1 + " Osta tuotetta " + tc2 + "§m----------");
 								player.sendMessage("");
@@ -381,30 +385,24 @@ public class MarketListener implements Listener {
 								player.sendMessage(tc2 + " Hinta: " + tc1 + Economy.moneyAsString(price) + amountString);
 								player.sendMessage(tc2 + " Varastossa: " + tc1 + amountInStorage + " kpl");
 								player.sendMessage("");
-								if (amountInStorage == 0) {
-									player.sendMessage(tc3 + " Tämä tuote on loppuunmyyty!");
-									player.sendMessage("");
+								if (amount == 1) {
+									player.sendMessage(tc2 + "Kirjoita " + tc1 + "chattiin" + tc2 + ", kuinka monta " + tc1 + "kappaletta" + tc2 + " haluat ostaa:");
 								}
 								else {
-									if (amount == 1) {
-										player.sendMessage(tc2 + "Kirjoita " + tc1 + "chattiin" + tc2 + ", kuinka monta " + tc1 + "kappaletta" + tc2 + " haluat ostaa:");
-									}
-									else {
-										player.sendMessage(tc2 + "Kirjoita " + tc1 + "chattiin" + tc2 + ", kuinka monta " + tc1 + sellingPoint.getAmount() + " kappaleen erää" + tc2 + " haluat ostaa:");
-									}
-									int identifier = new Random().nextInt(10000);
-									String data = marketStall.getId() + ":" + sellingPoint.getId() + ":" + identifier;
-									buy.put(player, data);
-									new BukkitRunnable() {
-										public void run() {
-											if (buy.containsKey(player) && buy.get(player).equals(data)) {
-												player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
-												player.sendMessage(tc3 + "Ostaminen peruttu!");
-												buy.remove(player);
-											}
-										}
-									}.runTaskLater(economy, 140);
+									player.sendMessage(tc2 + "Kirjoita " + tc1 + "chattiin" + tc2 + ", kuinka monta " + tc1 + sellingPoint.getAmount() + " kappaleen erää" + tc2 + " haluat ostaa:");
 								}
+								int identifier = new Random().nextInt(10000);
+								String data = marketStall.getId() + ":" + sellingPoint.getId() + ":" + identifier;
+								buy.put(player, data);
+								new BukkitRunnable() {
+									public void run() {
+										if (buy.containsKey(player) && buy.get(player).equals(data)) {
+											player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
+											player.sendMessage(tc3 + "Ostaminen peruttu!");
+											buy.remove(player);
+										}
+									}
+								}.runTaskLater(economy, 140);
 							}
 						}.runTaskAsynchronously(economy);
 					}
@@ -429,29 +427,7 @@ public class MarketListener implements Listener {
 		
 		SellingPoint sellingPoint = economy.getMarketManager().getSellingPointByInventory(e.getInventory());
 		if (sellingPoint != null) {
-			ItemFrame frame = sellingPoint.getFrame();
-			if (frame != null) {
-				frame.setSilent(true);
-				ItemStack preview = null;
-				for (int i = 0; i < sellingPoint.getInventory().getContents().length - 2; i++) {
-					ItemStack item = sellingPoint.getInventory().getContents()[i];
-					if (CoreUtils.isNotAir(item)) {
-						String amountString = sellingPoint.getAmount() == 1 ? "/kpl" : "/" + sellingPoint.getAmount() + "kpl";
-						preview = item.clone();
-						preview.setAmount(1);
-						ItemMeta meta = preview.getItemMeta();
-						meta.setDisplayName("§a" + LanguageHelper.getItemDisplayName(preview, "fi_FI") + "§6 " + Economy.moneyAsString(sellingPoint.getPrice()) + amountString);
-						preview.setItemMeta(meta);
-						break;
-					}
-				}
-				if (preview != null) {
-					frame.setItem(preview);
-				}
-				else {
-					frame.setItem(null);
-				}
-			}
+			sellingPoint.updateFrame();
 			player.playSound(player.getLocation(), Sound.BLOCK_CHEST_CLOSE, 0.5f, 1);
 			ItemStack first = null;
 			for (int i = 0; i < sellingPoint.getInventory().getContents().length - 2; i++) {
