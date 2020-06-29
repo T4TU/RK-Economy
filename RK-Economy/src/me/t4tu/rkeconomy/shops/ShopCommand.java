@@ -6,9 +6,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.t4tu.rkcore.utils.CoreUtils;
-import me.t4tu.rkcore.utils.ReflectionUtils;
 import me.t4tu.rkeconomy.Economy;
-import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.chat.ComponentSerializer;
 
 public class ShopCommand implements CommandExecutor {
 	
@@ -48,10 +47,10 @@ public class ShopCommand implements CommandExecutor {
 						else {
 							for (Shop shop : economy.getShopManager().getShops()) {
 								String color = shop.isDisabled() ? tc3 : tc1;
-								ReflectionUtils.sendChatPacket(p, "[\"\",{\"text\":\"" + tc2 + " - \"},{\"text\":\"" + color + "#" + shop.getId() + ": '" + shop.getName() + 
+								p.spigot().sendMessage(ComponentSerializer.parse("[\"\",{\"text\":\"" + tc2 + " - \"},{\"text\":\"" + color + "#" + shop.getId() + ": '" + shop.getName() + 
 										"'\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/shop edit " + shop.getId() + 
 										"\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[{\"text\":\"" + color + "Muokkaa kauppaa '" + shop.getName() + 
-										"'\"}]}}}]", ChatMessageType.CHAT);
+										"'\"}]}}}]"));
 							}
 						}
 						p.sendMessage("");
